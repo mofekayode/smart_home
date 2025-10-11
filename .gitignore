@@ -1,0 +1,38 @@
+# ===============================
+# 🧠 Smartbrain / Jarvis Home Gitignore
+# ===============================
+
+# Node.js & builds
+node_modules/
+dist/
+logs/
+*.log
+npm-debug.log*
+
+# Environment & secrets
+.env
+.env.*
+ha_config/secrets.yaml
+
+# Home Assistant runtime data
+ha_config/.storage/
+ha_config/home-assistant_v2.db
+ha_config/home-assistant.log
+ha_config/home-assistant.backup
+ha_config/tts/
+ha_config/.cloud/
+ha_config/.cloud_backup/
+ha_config/.HA_VERSION
+
+# Temporary or cache files
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+.vscode/
+.idea/
+
+# Docker stuff
+*.pid
+docker-compose.override.yml
+docker/data/
