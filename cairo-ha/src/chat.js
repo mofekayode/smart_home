@@ -6,10 +6,10 @@ const router = express.Router();
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 // Call your own API endpoints safely
-const JARVIS_BASE = 'http://localhost:7860';
+const CAIRO_BASE = 'http://localhost:7860';
 
 async function callLocal(path, method='get', body={}) {
-  const res = await axios({ method, url: `${JARVIS_BASE}${path}`, data: body });
+  const res = await axios({ method, url: `${CAIRO_BASE}${path}`, data: body });
   return res.data;
 }
 
@@ -21,7 +21,7 @@ router.post('/', async (req, res) => {
   const automations = await callLocal('/automations');
 
   const system = `
-You are Jarvis, an intelligent home assistant that can control devices, check sensors,
+You are Cairo, an intelligent home assistant that can control devices, check sensors,
 and manage automations through provided API tools.
 
 If the user asks you to perform something concrete (turn lights, add automation, etc),
