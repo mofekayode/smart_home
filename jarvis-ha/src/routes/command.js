@@ -1,0 +1,114 @@
+import { Router } from 'express';
+import { callService, getState } from '../homeAssistantClient.js';
+import { getCatalogCached } from '../catalogService.js';
+import { parseToAction } from '../nlp.js';
+import { normalizeTargets } from '../utils/validators.js';
+import { ALLOWED_INTENTS, ENTITY_RE } from '../constants.js';
+
+const router = Router();
+
+router.post('/intent/parse', async (req, res) => {
+  const { text } = req.body || {};
+  if (!text) return res.status(400).json({ error: 'text required' });
+  const act = await parseToAction(text);
+  return res.json(act);
+});
+
+router.post('/', async (req, res) => {
+  try {
+    const { text } = req.body || {};
+    if (!text) return res.status(400).json({ error: 'text required' });
+
+    const catalog = await getCatalogCached();
+    const act = await parseToAction(text, catalog);
+
+    if (act.intent === 'EXPLAIN_UNSUPPORTED') {
+      return res.status(400).json({ error: 'unsupported', act });
+    }
+
+    if (!ALLOWED_INTENTS.has(act.intent)) {
+      return res.status(400).json({ error: 'intent not allowed', act });
+    }
+
+    const targets = normalizeTargets(act);
+    if (act.intent !== 'GET_STATE' && !targets) {
+      return res.status(400).json({ error: 'no valid target entity', act, hint: 'use /introspect/entities to see available ids' });
+    }
+
+    let result;
+    switch (act.intent) {
+      case 'LIGHT_ON':
+        result = await callService('light', 'turn_on', { entity_id: targets.length === 1 ? targets[0] : targets });
+        break;
+      case 'LIGHT_OFF':
+        result = await callService('light', 'turn_off', { entity_id: targets.length === 1 ? targets[0] : targets });
+        break;
+      case 'LIGHT_SET_BRIGHTNESS': {
+        const brightness_pct = Math.max(0, Math.min(100, Number(act.brightness_pct ?? 100)));
+        result = await callService('light', 'turn_on', { entity_id: targets.length === 1 ? targets[0] : targets, brightness_pct });
+        break;
+      }
+      case 'SWITCH_ON':
+        result = await callService('switch', 'turn_on', { entity_id: targets[0] });
+        break;
+      case 'SWITCH_OFF':
+        result = await callService('switch', 'turn_off', { entity_id: targets[0] });
+        break;
+      case 'GET_STATE': {
+        const id = act.entity_id && ENTITY_RE.test(act.entity_id) ? act.entity_id
+                 : (targets ? targets[0] : 'sensor.centralite_3310_g_temperature');
+        result = await getState(id);
+        break;
+      }
+      case 'LIGHT_TOGGLE':
+        result = await callService('light', 'toggle', { entity_id: targets.length === 1 ? targets[0] : targets });
+        break;
+      case 'SWITCH_TOGGLE':
+        result = await callService('switch', 'toggle', { entity_id: targets[0] });
+        break;
+      case 'GET_TEMPERATURE': {
+        const id = act.entity_id && ENTITY_RE.test(act.entity_id) ? act.entity_id : 'sensor.centralite_3310_g_temperature';
+        const s = await getState(id);
+        return res.json({
+          act, result: {
+            entity: s.entity_id,
+            value: s.state,
+            unit: s.attributes.unit_of_measurement || ''
+          }
+        });
+      }
+      case 'GET_HUMIDITY': {
+        const id = act.entity_id && ENTITY_RE.test(act.entity_id) ? act.entity_id : 'sensor.centralite_3310_g_humidity';
+        const s = await getState(id);
+        return res.json({
+          act, result: {
+            entity: s.entity_id,
+            value: s.state,
+            unit: s.attributes.unit_of_measurement || '%'
+          }
+        });
+      }
+      case 'GET_MOTION': {
+        const id = act.entity_id && ENTITY_RE.test(act.entity_id) ? act.entity_id : 'binary_sensor.motion_sensor';
+        const s = await getState(id);
+        return res.json({
+          act, result: {
+            entity: s.entity_id,
+            motion: s.state === 'on',
+            state: s.state,
+            last_changed: s.last_changed
+          }
+        });
+      }
+      default:
+        return res.status(400).json({ error: 'unhandled intent', act });
+    }
+
+    return res.json({ act, result });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: err.message });
+  }
+});
+
+export default router;

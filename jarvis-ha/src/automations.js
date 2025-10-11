@@ -3,7 +3,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import yaml from 'js-yaml';
 
-const AUTOMATIONS_PATH = process.env.AUTOMATIONS_PATH
+export const AUTOMATIONS_PATH = process.env.AUTOMATIONS_PATH
   || '/home/mofe/smartbrain/ha_config/automations.yaml';
 
 function assertWhitelisted(p) {
