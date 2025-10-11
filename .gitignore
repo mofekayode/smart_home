@@ -36,3 +36,7 @@ __pycache__/
 *.pid
 docker-compose.override.yml
 docker/data/
+
+# Mosquitto runtime data
+mosquitto/data/
+mosquitto/log/

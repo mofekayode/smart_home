@@ -1,0 +1,30 @@
+curl -s -o /dev/null -w "Reload HTTP %{http_code}\n" \
+  -H "Authorization: Bearer $HA_TOKEN" \
+  -H "Content-Type: application/json" \
+  -X POST http://localhost:8123/api/services/automation/reload
+
+  ha reload-automations
+
+
+curl -s -o /dev/null -w "Reload HTTP %{http_code}\n" \
+  -H "Authorization: Bearer $HA_TOKEN" \
+  -H "Content-Type: application/json" \
+  -X POST http://localhost:8123/api/services/script/reload
+
+ha reload-scripts
+
+
+curl -s -o /dev/null -w "Reload HTTP %{http_code}\n" \
+  -H "Authorization: Bearer $HA_TOKEN" \
+  -H "Content-Type: application/json" \
+  -X POST http://localhost:8123/api/services/scene/reload
+
+  ha reload-scenes
+
+
+docker restart homeassistant
+ha restart
+
+
+
+

@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+# Simple HA helper CLI
+
+HA_URL="${HA_URL:-http://localhost:8123}"
+HA_TOKEN="${HA_TOKEN:-}"
+
+if [ -z "$HA_TOKEN" ]; then
+  echo "Set HA_TOKEN first:  export HA_TOKEN='your_long_lived_token'"
+  exit 1
+fi
+
+case "$1" in
+  reload-automations)
+    ENDPOINT="/api/services/automation/reload"
+    ;;
+  reload-scripts)
+    ENDPOINT="/api/services/script/reload"
+    ;;
+  reload-scenes)
+    ENDPOINT="/api/services/scene/reload"
+    ;;
+  restart)
+    docker restart homeassistant
+    exit 0
+    ;;
+  *)
+    echo "Usage: ha reload-automations | reload-scripts | reload-scenes | restart"
+    exit 1
+    ;;
+esac
+
+curl -s -o /dev/null -w "Reload HTTP %{http_code}\n" \
+  -H "Authorization: Bearer $HA_TOKEN" \
+  -H "Content-Type: application/json" \
+  -X POST "$HA_URL$ENDPOINT"

@@ -1,0 +1,49 @@
+services:
+  homeassistant:
+    container_name: homeassistant
+    image: ghcr.io/home-assistant/home-assistant:stable
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      - TZ=UTC
+    # Needed so HA can talk to the host's BlueZ over D-Bus
+    privileged: true
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    volumes:
+      - ./ha_config:/config
+      - /run/dbus:/run/dbus:ro
+    # Zigbee (CP2105 UART #0)
+    devices:
+      - /dev/serial/by-id/usb-Silicon_Labs_CP2105_Dual_USB_to_UART_Bridge_Controller_0166152A-if00-port0:/dev/zigbee
+    group_add:
+      - dialout
+    depends_on:
+      - mosquitto
+      - zwavejsui
+
+  mosquitto:
+    container_name: mosquitto
+    image: eclipse-mosquitto:2
+    restart: unless-stopped
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+    ports:
+      - "1883:1883"
+
+  zwavejsui:
+    container_name: zwavejsui
+    image: zwavejs/zwave-js-ui:latest
+    network_mode: host
+    restart: unless-stopped
+    environment:
+      - TZ=UTC
+    volumes:
+      - ./zwavejsui:/usr/src/app/store
+    # Z-Wave (CP2105 UART #1)
+    devices:
+      - /dev/serial/by-id/usb-Silicon_Labs_CP2105_Dual_USB_to_UART_Bridge_Controller_0166152A-if01-port0:/dev/zwave
+    command: >
+      node server/bin/www --websocket 3000 --port 8091
