@@ -6,31 +6,75 @@ const router = Router();
 router.get('/state', async (req, res) => {
   const id = req.query.entity;
   if (!id) return res.status(400).json({ error: 'entity required' });
-  res.json(await getState(id));
+  
+  try {
+    const state = await getState(id);
+    res.json(state);
+  } catch (error) {
+    console.error(`Failed to get state for entity ${id}:`, error.message);
+    if (error.response?.status === 404) {
+      return res.status(404).json({ 
+        error: `Entity '${id}' not found in Home Assistant`,
+        suggestion: 'Check your Home Assistant for valid entity IDs'
+      });
+    }
+    res.status(500).json({ error: error.message });
+  }
 });
 
 router.get('/sensor', async (req, res) => {
   const id = req.query.entity;
   if (!id) return res.status(400).json({ error: 'entity required' });
-  const s = await getState(id);
-  res.json({
-    entity: s.entity_id,
-    value: s.state,
-    unit: s.attributes.unit_of_measurement || '',
-    last_changed: s.last_changed
-  });
+  
+  try {
+    const s = await getState(id);
+    res.json({
+      entity: s.entity_id,
+      value: s.state,
+      unit: s.attributes.unit_of_measurement || '',
+      last_changed: s.last_changed
+    });
+  } catch (error) {
+    if (error.response?.status === 404) {
+      return res.status(404).json({ 
+        error: `Sensor '${id}' not found in Home Assistant`,
+        suggestion: 'Check your Home Assistant for valid sensor entity IDs'
+      });
+    }
+    res.status(500).json({ error: error.message });
+  }
 });
 
 router.get('/motion', async (req, res) => {
   const id = req.query.entity || 'binary_sensor.motion_sensor';
-  const s = await getState(id);
-  res.json({ entity: s.entity_id, motion: s.state === 'on', state: s.state, last_changed: s.last_changed });
+  try {
+    const s = await getState(id);
+    res.json({ entity: s.entity_id, motion: s.state === 'on', state: s.state, last_changed: s.last_changed });
+  } catch (error) {
+    if (error.response?.status === 404) {
+      return res.status(404).json({ 
+        error: `Motion sensor '${id}' not found in Home Assistant`,
+        suggestion: 'Check your Home Assistant for valid motion sensor entity IDs'
+      });
+    }
+    res.status(500).json({ error: error.message });
+  }
 });
 
 router.get('/humidity', async (req, res) => {
   const id = req.query.entity || 'sensor.centralite_3310_g_humidity';
-  const s = await getState(id);
-  res.json({ entity: s.entity_id, value: s.state, unit: s.attributes.unit_of_measurement || '%' });
+  try {
+    const s = await getState(id);
+    res.json({ entity: s.entity_id, value: s.state, unit: s.attributes.unit_of_measurement || '%' });
+  } catch (error) {
+    if (error.response?.status === 404) {
+      return res.status(404).json({ 
+        error: `Humidity sensor '${id}' not found in Home Assistant`,
+        suggestion: 'Check your Home Assistant for valid humidity sensor entity IDs'
+      });
+    }
+    res.status(500).json({ error: error.message });
+  }
 });
 
 router.get('/history', async (req, res) => {
