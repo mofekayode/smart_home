@@ -71,14 +71,17 @@ router.post('/reload', async (_req, res) => {
 });
 
 router.delete('/delete', async (req, res) => {
-  const { id, alias, keep_only } = req.body || {};
+  const { id, alias, keep_only, delete_all } = req.body || {};
   
   const bak = await backupAutomations();
   try {
     const autos = await loadAutomations();
     let filtered;
     
-    if (keep_only) {
+    if (delete_all === true) {
+      // Delete all automations
+      filtered = [];
+    } else if (keep_only) {
       // Keep only automations with specified aliases
       const keepList = Array.isArray(keep_only) ? keep_only : [keep_only];
       filtered = autos.filter(a => {
@@ -88,7 +91,7 @@ router.delete('/delete', async (req, res) => {
       });
     } else {
       // Delete specific automation
-      if (!id && !alias) return res.status(400).json({ error: 'id or alias required' });
+      if (!id && !alias) return res.status(400).json({ error: 'id, alias, or delete_all required' });
       filtered = autos.filter(a => {
         if (id && a.id === id) return false;
         if (alias && a.alias === alias) return false;
@@ -96,7 +99,7 @@ router.delete('/delete', async (req, res) => {
       });
     }
     
-    if (filtered.length === autos.length && !keep_only) {
+    if (filtered.length === autos.length && !keep_only && !delete_all) {
       return res.status(404).json({ error: 'Automation not found' });
     }
     

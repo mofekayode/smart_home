@@ -35,6 +35,7 @@ CRITICAL: Response format rules:
    - "list/show automations" → Use /automations endpoint
    - "apply/yes" (after automation proposal) → Use /automations/apply
    - "delete automation" → Use /automations/delete
+   - "delete all automations" → First GET count, then delete appropriately
    - "clear/remove all but X" → Use /automations/delete with keep_only parameter
    - Any sensor/device query → Use /command endpoint
 
@@ -75,6 +76,7 @@ Available endpoints:
 - POST /automations/apply {"proposal": {...}, "mode": "update|create"} - Apply automation
 - DELETE /automations/delete {"alias": "..."} - Delete an automation by name
 - DELETE /automations/delete {"keep_only": "switch"} - Delete all except automations containing "switch" in name
+- DELETE /automations/delete {"delete_all": true} - Delete ALL automations
 
 Examples with personality:
 User: "turn on the lights"
@@ -91,6 +93,9 @@ Return: {"action": {"endpoint": "/automations/delete", "method": "DELETE", "body
 
 User: "delete all automations except the switch one" or "clear all but the switch" or "keep only the switch automation"
 Return: {"action": {"endpoint": "/automations/delete", "method": "DELETE", "body": {"keep_only": "switch"}}, "response": "I'll clear out all automations except the switch one...", "followup": "Done! I've kept only the switch automation and removed all others. Your automation list is cleaned up!"}
+
+User: "delete all automations" or "delete all" or "clear all automations" or "remove all automations"
+Return: {"action": {"endpoint": "/automations/delete", "method": "DELETE", "body": {"delete_all": true}}, "response": "Let me clear all your automations...", "followup": "Done! All automations have been deleted. Your automation list is now empty. Want to create some new ones?"}
 
 User: "check the humidity"
 Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "check the humidity"}}, "response": "Let me check the humidity sensor...", "followup": "#HUMIDITY_RESULT#"}
@@ -417,12 +422,17 @@ REMEMBER:
       } else if (result?.deleted) {
         // Automation deletion success
         const remaining = result.remaining || 0;
+        const deletedCount = result.deleted || 0;
+        
         if (result.kept) {
           // Bulk deletion with keep_only
-          contextualReply = `Perfect! I've cleaned up your automations. Deleted ${result.deleted} and kept only: ${result.kept.join(', ')}. `;
+          contextualReply = `Perfect! I've cleaned up your automations. Deleted ${deletedCount} and kept only: ${result.kept.join(', ')}. `;
           contextualReply += remaining === 1 
             ? `You now have just that one automation running.`
             : `You now have ${remaining} automations running.`;
+        } else if (remaining === 0 && deletedCount > 1) {
+          // Deleted all automations
+          contextualReply = `All done! I've deleted all ${deletedCount} automations. Your automation list is now empty. Want to set up some new ones to make your home smart again?`;
         } else if (remaining === 0) {
           contextualReply = `Done! I've removed that automation. You don't have any automations set up now. Want to create some new ones?`;
         } else {

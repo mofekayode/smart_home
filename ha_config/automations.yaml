@@ -1,57 +1,14 @@
-- id: '1760211443678'
-  alias: Turn both lamps exactly follow motion
-  description: Lamps on when motion is on, off when motion is off, no delay.
-  mode: restart
+- alias: Turn on lights when bot1 is switched on
+  id: turn_on_lights_bot1_on
+  description: Activates lights when the bot1 switch is turned on.
   trigger:
-    - id: motion_state_change
-      platform: state
-      entity_id: binary_sensor.motion_sensor
-  action:
-    - choose:
-        - conditions:
-            - condition: state
-              entity_id: binary_sensor.motion_sensor
-              state: 'on'
-          sequence:
-            - service: light.turn_on
-              target:
-                entity_id:
-                  - light.short_lamp
-                  - light.tall_lamp
-        - conditions:
-            - condition: state
-              entity_id: binary_sensor.motion_sensor
-              state: 'off'
-          sequence:
-            - service: light.turn_off
-              target:
-                entity_id:
-                  - light.short_lamp
-                  - light.tall_lamp
-- id: '1760219999999'
-  alias: Turn on tall lamp at sunset
-  description: Turns on only the tall lamp when the sun sets.
-  mode: single
-  trigger:
-    - platform: sun
-      event: sunset
+    platform: state
+    entity_id: switch.bot1
+    to: 'on'
   action:
     - service: light.turn_on
       target:
-        entity_id: light.tall_lamp
-- alias: Turn off short lamp at 10 PM
-  id: turn_off_short_lamp_10pm
-  description: Turns off the short lamp at 22:00 only if no motion was detected for 10 minutes.
-  trigger:
-    - platform: time
-      at: '22:00:00'
-  condition:
-    - condition: state
-      entity_id: binary_sensor.motion_sensor
-      state: 'off'
-      for: '00:10:00'
-  action:
-    - service: light.turn_off
-      target:
-        entity_id: light.short_lamp
+        entity_id:
+          - light.tall_lamp
+          - light.short_lamp
   mode: single
