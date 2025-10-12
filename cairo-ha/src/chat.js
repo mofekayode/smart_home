@@ -44,10 +44,13 @@ User: "turn on the lights"
 Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "turn on the lights"}}, "response": "Turning on the lights for you."}
 
 User: "what's the temperature?"
-Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "what's the temperature"}}, "response": "Let me check the temperature for you."}
+Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "what's the temperature"}}, "response": "Checking the temperature for you..."}
+
+User: "what's the temperature and humidity?"
+Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "what's the temperature and humidity"}}, "response": "Let me check both the temperature and humidity for you..."}
 
 User: "check the humidity"
-Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "check the humidity"}}, "response": "Let me check the humidity for you."}
+Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "check the humidity"}}, "response": "Checking the humidity..."}
 
 User: "create automation to turn off lights when bot1 is on"
 Return: {"action": {"endpoint": "/automations/suggest", "method": "POST", "body": {"text": "turn off lights when bot1 is on"}}, "response": "Let me create that automation for you."}
@@ -183,6 +186,20 @@ Automations loaded: ${automations.count}
             contextualReply += '\n';
           });
         }
+      } else if (result?.act?.intent === 'GET_CLIMATE' && result?.result) {
+        // Handle combined temperature and humidity response
+        const temp = result.result.temperature;
+        const humid = result.result.humidity;
+        
+        let tempStr = temp.mock 
+          ? `${temp.value}${temp.unit} (mock)` 
+          : `${temp.value}${temp.unit}`;
+        
+        let humidStr = humid.mock 
+          ? `${humid.value}${humid.unit} (mock)` 
+          : `${humid.value}${humid.unit}`;
+        
+        contextualReply = `The temperature is ${tempStr} and the humidity is ${humidStr}.`;
       } else if (result?.act?.intent === 'GET_TEMPERATURE' && result?.result?.value) {
         if (result.result.mock) {
           contextualReply = `The temperature reading is ${result.result.value}${result.result.unit} (Note: ${result.result.message}).`;

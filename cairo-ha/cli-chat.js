@@ -76,7 +76,7 @@ async function sendMessage(text) {
     
     // Handle response
     if (data.ok && data.result) {
-      // Action was performed - Cairo should provide the interpretation
+      // Show Cairo's response with the results
       printCairo(data.reply || 'Action completed successfully');
       
       // Store automation proposal if present for follow-up

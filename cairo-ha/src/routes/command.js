@@ -27,7 +27,12 @@ router.post('/', async (req, res) => {
     
     // OVERRIDE: Fix common temperature/humidity queries that NLP fails to parse
     const lowerText = text.toLowerCase();
-    if (lowerText.includes('temperature') && !act.intent?.includes('TEMP')) {
+    
+    // Check for combined temperature AND humidity query
+    if (lowerText.includes('temperature') && lowerText.includes('humidity')) {
+      console.log('OVERRIDE: Detected combined climate query, forcing GET_CLIMATE');
+      act = { intent: 'GET_CLIMATE' };
+    } else if (lowerText.includes('temperature') && !act.intent?.includes('TEMP')) {
       console.log('OVERRIDE: Detected temperature query, forcing GET_TEMPERATURE');
       act = { intent: 'GET_TEMPERATURE' };
     } else if (lowerText.includes('humidity') && !act.intent?.includes('HUMID')) {
@@ -48,7 +53,7 @@ router.post('/', async (req, res) => {
 
     const targets = normalizeTargets(act);
     // Skip target validation for intents that have default sensors
-    const intentsWithDefaults = ['GET_TEMPERATURE', 'GET_HUMIDITY', 'GET_MOTION', 'GET_STATE'];
+    const intentsWithDefaults = ['GET_TEMPERATURE', 'GET_HUMIDITY', 'GET_MOTION', 'GET_STATE', 'GET_CLIMATE'];
     if (!intentsWithDefaults.includes(act.intent) && !targets) {
       return res.status(400).json({ error: 'no valid target entity', act, hint: 'use /introspect/entities to see available ids' });
     }
@@ -154,6 +159,63 @@ router.post('/', async (req, res) => {
             });
           }
           throw error;
+        }
+      }
+      case 'GET_CLIMATE': {
+        // Get both temperature and humidity in parallel
+        const tempId = 'sensor.centralite_3310_g_temperature';
+        const humidId = 'sensor.centralite_3310_g_humidity';
+        
+        console.log(`GET_CLIMATE: Fetching both temperature and humidity`);
+        
+        try {
+          // Fetch both in parallel for speed
+          const [tempResult, humidResult] = await Promise.allSettled([
+            getState(tempId),
+            getState(humidId)
+          ]);
+          
+          const response = { act };
+          const results = {};
+          
+          // Handle temperature result
+          if (tempResult.status === 'fulfilled') {
+            results.temperature = {
+              value: tempResult.value.state,
+              unit: tempResult.value.attributes.unit_of_measurement || '°F',
+              entity: tempId
+            };
+          } else {
+            results.temperature = {
+              value: "72",
+              unit: "°F",
+              mock: true,
+              error: "Sensor not found"
+            };
+          }
+          
+          // Handle humidity result  
+          if (humidResult.status === 'fulfilled') {
+            results.humidity = {
+              value: humidResult.value.state,
+              unit: humidResult.value.attributes.unit_of_measurement || '%',
+              entity: humidId
+            };
+          } else {
+            results.humidity = {
+              value: "45",
+              unit: "%",
+              mock: true,
+              error: "Sensor not found"
+            };
+          }
+          
+          response.result = results;
+          return res.json(response);
+          
+        } catch (error) {
+          console.error('GET_CLIMATE error:', error);
+          return res.status(500).json({ error: error.message });
         }
       }
       case 'GET_MOTION': {
