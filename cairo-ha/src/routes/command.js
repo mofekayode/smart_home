@@ -58,8 +58,20 @@ router.post('/', async (req, res) => {
         result = await callService('switch', 'turn_off', { entity_id: targets[0] });
         break;
       case 'GET_STATE': {
-        const id = act.entity_id && ENTITY_RE.test(act.entity_id) ? act.entity_id
-                 : (targets ? targets[0] : 'sensor.centralite_3310_g_temperature');
+        // Only use act.entity_id if it's a valid entity format
+        let id;
+        if (act.entity_id && ENTITY_RE.test(act.entity_id)) {
+          id = act.entity_id;
+        } else if (targets && targets[0]) {
+          id = targets[0];
+        } else {
+          // If no valid entity, return error
+          return res.status(400).json({ 
+            error: 'No valid entity specified', 
+            act,
+            hint: 'Please specify a valid entity ID like sensor.temperature' 
+          });
+        }
         result = await getState(id);
         break;
       }
@@ -70,7 +82,9 @@ router.post('/', async (req, res) => {
         result = await callService('switch', 'toggle', { entity_id: targets[0] });
         break;
       case 'GET_TEMPERATURE': {
-        const id = act.entity_id && ENTITY_RE.test(act.entity_id) ? act.entity_id : 'sensor.centralite_3310_g_temperature';
+        // Force use default sensor unless a VALID entity_id is provided
+        const id = (act.entity_id && act.entity_id.startsWith('sensor.')) ? act.entity_id : 'sensor.centralite_3310_g_temperature';
+        console.log(`GET_TEMPERATURE: Using sensor ${id}`);
         try {
           const s = await getState(id);
           return res.json({
@@ -93,7 +107,9 @@ router.post('/', async (req, res) => {
         }
       }
       case 'GET_HUMIDITY': {
-        const id = act.entity_id && ENTITY_RE.test(act.entity_id) ? act.entity_id : 'sensor.centralite_3310_g_humidity';
+        // Force use default sensor unless a VALID entity_id is provided
+        const id = (act.entity_id && act.entity_id.startsWith('sensor.')) ? act.entity_id : 'sensor.centralite_3310_g_humidity';
+        console.log(`GET_HUMIDITY: Using sensor ${id}`);
         try {
           const s = await getState(id);
           return res.json({
