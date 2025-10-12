@@ -30,8 +30,13 @@ CRITICAL: Response format rules:
    
 2. For regular conversation (greetings, questions about you, chit-chat): 
    Just respond naturally with text, no JSON needed.
+   
+3. IMPORTANT: If you say you're going to check/do something, YOU MUST DO IT:
+   - "Let me check the temperature" → MUST return action JSON
+   - "One moment..." → MUST be followed by an action
+   - Never say you'll do something without actually doing it
 
-3. Common action triggers that MUST return JSON:
+4. Common action triggers that MUST return JSON:
    - "list/show automations" → Use /automations endpoint
    - "apply/yes" (after automation proposal) → Use /automations/apply
    - "delete automation" → Use /automations/delete
@@ -39,10 +44,11 @@ CRITICAL: Response format rules:
    - "clear/remove all but X" → Use /automations/delete with keep_only parameter
    - Any sensor/device query → Use /command endpoint
 
-IMPORTANT: You can only execute ONE action per response. If user asks to delete multiple things:
-- Delete ONE automation
-- Tell them you're working on it and they should ask again to continue
-- Or suggest they use a script for bulk operations
+IMPORTANT RULES:
+- You can only execute ONE action per response
+- If you say "let me check" or "one moment" YOU MUST include an action
+- Never leave the user waiting after saying you'll do something
+- For questions that need data (like "what to wear"), check sensors first
 
 Use the "response" field for immediate acknowledgment
 Use the "followup" field for what to say after getting the result
@@ -117,6 +123,9 @@ Return: {"action": {"endpoint": "/automations", "method": "GET", "body": {}}, "r
 
 User: "how are you?"
 Return: I'm doing great! Ready to help with anything you need - lights, temperature, automations, you name it.
+
+User: "what should I wear?" or "is it hot/cold?" or clothing-related questions
+Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "what's the temperature"}}, "response": "Let me check the temperature to help you decide...", "followup": "#TEMP_THEN_SUGGEST_CLOTHING#"}
 
 Current capabilities: ${JSON.stringify(caps.capabilities).slice(0,500)}
 Automations loaded: ${automations.count}
@@ -310,15 +319,36 @@ REMEMBER:
                        tempValue < 85 ? "Getting a bit warm." : 
                        "Pretty toasty! Maybe time for some AC?";
         
-        if (result.result.mock) {
-          contextualReply = `I'm showing ${tempValue} degrees ${timeContext} (using test data). ${comment}`;
-        } else {
-          contextualReply = `It's ${tempValue} degrees ${timeContext}. ${comment}`;
-        }
+        // Check if this was a clothing-related query
+        const isClothingQuery = req.body.history?.slice(-2).some(msg => 
+          msg.content && (msg.content.toLowerCase().includes('wear') || 
+                         msg.content.toLowerCase().includes('clothing') ||
+                         msg.content.toLowerCase().includes('dressed'))
+        );
         
-        // Add suggestions based on temperature
-        if (tempValue > 78 || tempValue < 68) {
-          contextualReply += ` Would you like me to adjust anything?`;
+        if (isClothingQuery) {
+          // Give clothing suggestions based on temperature
+          if (tempValue < 65) {
+            contextualReply = `It's ${tempValue} degrees - pretty chilly! I'd suggest wearing something warm like a sweater or hoodie with comfortable pants.`;
+          } else if (tempValue < 72) {
+            contextualReply = `It's ${tempValue} degrees - nice and cool. A light long-sleeve shirt or t-shirt with pants would be comfortable.`;
+          } else if (tempValue < 78) {
+            contextualReply = `It's ${tempValue} degrees - perfect room temperature! T-shirt and shorts or light pants would be ideal.`;
+          } else {
+            contextualReply = `It's ${tempValue} degrees - quite warm! Light, breathable clothes like shorts and a t-shirt would be most comfortable.`;
+          }
+        } else {
+          // Normal temperature response
+          if (result.result.mock) {
+            contextualReply = `I'm showing ${tempValue} degrees ${timeContext} (using test data). ${comment}`;
+          } else {
+            contextualReply = `It's ${tempValue} degrees ${timeContext}. ${comment}`;
+          }
+          
+          // Add suggestions based on temperature
+          if (tempValue > 78 || tempValue < 68) {
+            contextualReply += ` Would you like me to adjust anything?`;
+          }
         }
       } else if (result?.act?.intent === 'GET_HUMIDITY' && result?.result?.value) {
         const humidValue = Math.round(parseFloat(result.result.value));
