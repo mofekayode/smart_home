@@ -39,8 +39,12 @@ Examples:
 User: "turn on the short lamp to 40%" -> {"intent":"LIGHT_SET_BRIGHTNESS","entity_id":"light.short_lamp","brightness_pct":40}
 User: "turn off both lights" -> {"intent":"LIGHT_OFF","entity_ids":["light.short_lamp","light.tall_lamp"]}
 User: "toggle bot1" -> {"intent":"SWITCH_TOGGLE","entity_id":"switch.bot1"}
-User: "what is the temperature" -> {"intent":"GET_TEMPERATURE","entity_id":"sensor.centralite_3310_g_temperature"}
+User: "what is the temperature" -> {"intent":"GET_TEMPERATURE"}
+User: "what is the humidity" -> {"intent":"GET_HUMIDITY"}
+User: "check the temperature of sensor.living_room" -> {"intent":"GET_TEMPERATURE","entity_id":"sensor.living_room"}
 User: "make the room purple" (unsupported) -> {"intent":"EXPLAIN_UNSUPPORTED","reason":"no color support","suggestion":"set brightness instead"}
+
+IMPORTANT: For GET_TEMPERATURE/GET_HUMIDITY/GET_MOTION - only include entity_id if user specifies a complete valid entity ID. Otherwise omit it.
 `;
 }
 

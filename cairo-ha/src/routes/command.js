@@ -21,6 +21,9 @@ router.post('/', async (req, res) => {
 
     const catalog = await getCatalogCached();
     const act = await parseToAction(text, catalog);
+    
+    // Debug logging
+    console.log('Parsed action:', JSON.stringify(act));
 
     if (act.intent === 'EXPLAIN_UNSUPPORTED') {
       return res.status(400).json({ error: 'unsupported', act });
