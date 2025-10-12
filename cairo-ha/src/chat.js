@@ -34,6 +34,7 @@ Never invent endpoints; only use ones shown below.
 Available endpoints:
 - POST /command {"text":"..."} - For device control (lights, switches, sensors)
 - GET /state?entity=... - Get specific entity state
+- GET /automations - List all automations
 - POST /automations/suggest {"text": "..."} - Suggest automation
 
 Examples:
@@ -42,6 +43,9 @@ Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "
 
 User: "what's the temperature?"
 Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "what's the temperature"}}, "response": "Let me check the temperature for you."}
+
+User: "what automations do I have?"
+Return: {"action": {"endpoint": "/automations", "method": "GET", "body": {}}, "response": "Let me show you your current automations."}
 
 User: "how are you?"
 Return: I'm doing well, thank you! I'm here to help with your smart home.
@@ -90,7 +94,27 @@ Automations loaded: ${automations.count}
       let contextualReply = parsed.response || '';
       
       // Add specific result interpretation
-      if (result?.act?.intent === 'GET_TEMPERATURE' && result?.result?.value) {
+      if (result?.automations && Array.isArray(result.automations)) {
+        // Handle automations list
+        const count = result.count || result.automations.length;
+        if (count === 0) {
+          contextualReply = `You don't have any automations set up yet. Would you like me to help you create one?`;
+        } else {
+          contextualReply = `You have ${count} automation${count !== 1 ? 's' : ''} configured:\n\n`;
+          result.automations.forEach((auto, index) => {
+            const name = auto.alias || auto.id || `Automation ${index + 1}`;
+            const triggers = auto.trigger ? (Array.isArray(auto.trigger) ? auto.trigger.length : 1) : 0;
+            const actions = auto.action ? (Array.isArray(auto.action) ? auto.action.length : 1) : 0;
+            contextualReply += `${index + 1}. **${name}**\n`;
+            contextualReply += `   - Triggers: ${triggers} trigger${triggers !== 1 ? 's' : ''}\n`;
+            contextualReply += `   - Actions: ${actions} action${actions !== 1 ? 's' : ''}\n`;
+            if (auto.description) {
+              contextualReply += `   - Description: ${auto.description}\n`;
+            }
+            contextualReply += '\n';
+          });
+        }
+      } else if (result?.act?.intent === 'GET_TEMPERATURE' && result?.result?.value) {
         contextualReply = `The temperature is currently ${result.result.value}°${result.result.unit || 'F'}.`;
       } else if (result?.act?.intent === 'GET_HUMIDITY' && result?.result?.value) {
         contextualReply = `The humidity is ${result.result.value}${result.result.unit || '%'}.`;
