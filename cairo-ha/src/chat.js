@@ -184,9 +184,17 @@ Automations loaded: ${automations.count}
           });
         }
       } else if (result?.act?.intent === 'GET_TEMPERATURE' && result?.result?.value) {
-        contextualReply = `The temperature is currently ${result.result.value}°${result.result.unit || 'F'}.`;
+        if (result.result.mock) {
+          contextualReply = `The temperature reading is ${result.result.value}${result.result.unit} (Note: ${result.result.message}).`;
+        } else {
+          contextualReply = `The temperature is currently ${result.result.value}°${result.result.unit || 'F'}.`;
+        }
       } else if (result?.act?.intent === 'GET_HUMIDITY' && result?.result?.value) {
-        contextualReply = `The humidity is ${result.result.value}${result.result.unit || '%'}.`;
+        if (result.result.mock) {
+          contextualReply = `The humidity reading is ${result.result.value}${result.result.unit} (Note: ${result.result.message}).`;
+        } else {
+          contextualReply = `The humidity is ${result.result.value}${result.result.unit || '%'}.`;
+        }
       } else if (result?.act?.intent === 'GET_MOTION' && result?.result) {
         contextualReply = result.result.motion 
           ? `Motion detected! Last activity was ${new Date(result.result.last_changed).toLocaleString()}.`
