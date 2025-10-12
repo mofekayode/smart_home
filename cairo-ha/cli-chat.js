@@ -92,10 +92,10 @@ async function sendMessage(text) {
       // Store automation proposal if present for follow-up
       if (data.result.proposal) {
         lastAutomationProposal = data.result.proposal;
-        // Add to history so Cairo knows about it
+        // Add proposal to conversation history for Cairo to reference
         conversationHistory.push({ 
-          role: 'system', 
-          content: `Last automation proposal: ${JSON.stringify(lastAutomationProposal)}` 
+          role: 'assistant', 
+          content: `AUTOMATION_PROPOSAL: ${JSON.stringify(lastAutomationProposal)}` 
         });
       }
       
@@ -132,11 +132,14 @@ async function sendMessage(text) {
       console.log(`${colors.gray}Unexpected response: ${JSON.stringify(data)}${colors.reset}`);
     }
     
-    // Add Cairo's response to history
-    conversationHistory.push({ 
-      role: 'assistant', 
-      content: data.reply || 'Action completed' 
-    });
+    // Add Cairo's response to history (if not already added for proposal)
+    const lastMsg = conversationHistory[conversationHistory.length - 1];
+    if (!lastMsg || !lastMsg.content?.includes('AUTOMATION_PROPOSAL')) {
+      conversationHistory.push({ 
+        role: 'assistant', 
+        content: data.reply || 'Action completed' 
+      });
+    }
     
     // Keep history size manageable (last 20 messages)
     if (conversationHistory.length > 20) {
