@@ -327,8 +327,9 @@ REMEMBER:
         }
         
         // Only suggest temperature check if NOT recently discussed
-        // Check if temperature was mentioned in last few messages
-        const recentTempCheck = act.history && act.history.slice(-3).some(msg => 
+        // Check if temperature was mentioned in last few messages from history parameter
+        const recentMessages = req.body.history || [];
+        const recentTempCheck = recentMessages.slice(-3).some(msg => 
           msg.content && msg.content.toLowerCase().includes('temperature')
         );
         
