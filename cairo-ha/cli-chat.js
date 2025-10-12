@@ -1,0 +1,155 @@
+#!/usr/bin/env node
+import readline from 'readline';
+import axios from 'axios';
+
+// Terminal colors
+const colors = {
+  reset: '\x1b[0m',
+  bright: '\x1b[1m',
+  green: '\x1b[32m',
+  yellow: '\x1b[33m',
+  blue: '\x1b[34m',
+  red: '\x1b[31m',
+  cyan: '\x1b[36m',
+  gray: '\x1b[90m'
+};
+
+// Configuration
+const CAIRO_URL = process.env.CAIRO_URL || 'http://localhost:7860';
+const chatEndpoint = `${CAIRO_URL}/chat`;
+
+// Initialize readline interface
+const rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout,
+  prompt: `${colors.cyan}You:${colors.reset} `
+});
+
+// Conversation history
+let conversationHistory = [];
+
+// Helper functions
+function printCairo(message) {
+  console.log(`${colors.green}${colors.bright}Cairo:${colors.reset} ${message}`);
+}
+
+function printAction(action, result) {
+  console.log(`${colors.yellow}[Action: ${action.endpoint} ${action.method}]${colors.reset}`);
+  if (result) {
+    console.log(`${colors.gray}Result: ${JSON.stringify(result, null, 2)}${colors.reset}`);
+  }
+}
+
+function printError(error) {
+  console.log(`${colors.red}Error: ${error}${colors.reset}`);
+}
+
+function printWelcome() {
+  console.log(`${colors.bright}${colors.blue}
+╔══════════════════════════════════════╗
+║   Cairo Smart Home Assistant CLI     ║
+╚══════════════════════════════════════╝${colors.reset}
+
+${colors.gray}Type your message and press Enter. Type 'quit' or 'exit' to leave.
+Examples:
+  - "Turn on the lights"
+  - "What's the temperature?"
+  - "Create an automation for the motion sensor"
+${colors.reset}`);
+}
+
+// Send message to Cairo
+async function sendMessage(text) {
+  try {
+    // Add user message to history
+    conversationHistory.push({ role: 'user', content: text });
+    
+    // Send request
+    const response = await axios.post(chatEndpoint, {
+      text,
+      history: conversationHistory
+    });
+    
+    const data = response.data;
+    
+    // Handle response
+    if (data.ok && data.result) {
+      // Action was performed
+      printCairo(data.reply || 'Action completed successfully');
+      printAction(data.action || {}, data.result);
+    } else if (data.reply) {
+      // Normal conversation
+      printCairo(data.reply);
+    }
+    
+    // Add Cairo's response to history
+    conversationHistory.push({ 
+      role: 'assistant', 
+      content: data.reply || 'Action completed' 
+    });
+    
+    // Keep history size manageable (last 20 messages)
+    if (conversationHistory.length > 20) {
+      conversationHistory = conversationHistory.slice(-20);
+    }
+    
+  } catch (error) {
+    if (error.response) {
+      printError(`Server error: ${error.response.data.error || error.response.statusText}`);
+    } else if (error.request) {
+      printError(`Cannot connect to Cairo server at ${CAIRO_URL}. Is it running?`);
+    } else {
+      printError(error.message);
+    }
+  }
+}
+
+// Main interaction loop
+printWelcome();
+
+rl.prompt();
+
+rl.on('line', async (line) => {
+  const input = line.trim();
+  
+  // Check for exit commands
+  if (input.toLowerCase() === 'quit' || input.toLowerCase() === 'exit') {
+    console.log(`${colors.blue}Goodbye!${colors.reset}`);
+    process.exit(0);
+  }
+  
+  // Check for clear command
+  if (input.toLowerCase() === 'clear') {
+    console.clear();
+    printWelcome();
+    rl.prompt();
+    return;
+  }
+  
+  // Check for history reset
+  if (input.toLowerCase() === 'reset') {
+    conversationHistory = [];
+    console.log(`${colors.gray}Conversation history cleared${colors.reset}`);
+    rl.prompt();
+    return;
+  }
+  
+  // Send message to Cairo
+  if (input) {
+    await sendMessage(input);
+  }
+  
+  rl.prompt();
+});
+
+// Handle Ctrl+C
+rl.on('SIGINT', () => {
+  console.log(`\n${colors.blue}Goodbye!${colors.reset}`);
+  process.exit(0);
+});
+
+// Handle connection errors
+process.on('uncaughtException', (error) => {
+  printError(`Unexpected error: ${error.message}`);
+  rl.prompt();
+});
