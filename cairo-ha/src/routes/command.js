@@ -68,25 +68,49 @@ router.post('/', async (req, res) => {
         break;
       case 'GET_TEMPERATURE': {
         const id = act.entity_id && ENTITY_RE.test(act.entity_id) ? act.entity_id : 'sensor.centralite_3310_g_temperature';
-        const s = await getState(id);
-        return res.json({
-          act, result: {
-            entity: s.entity_id,
-            value: s.state,
-            unit: s.attributes.unit_of_measurement || ''
+        try {
+          const s = await getState(id);
+          return res.json({
+            act, result: {
+              entity: s.entity_id,
+              value: s.state,
+              unit: s.attributes.unit_of_measurement || ''
+            }
+          });
+        } catch (error) {
+          if (error.response?.status === 404) {
+            return res.json({
+              act, result: {
+                error: `Temperature sensor '${id}' not found. Please check your sensor entity IDs in Home Assistant.`,
+                suggestion: "Try 'sensor.temperature' or check your HA dashboard for the correct entity ID."
+              }
+            });
           }
-        });
+          throw error;
+        }
       }
       case 'GET_HUMIDITY': {
         const id = act.entity_id && ENTITY_RE.test(act.entity_id) ? act.entity_id : 'sensor.centralite_3310_g_humidity';
-        const s = await getState(id);
-        return res.json({
-          act, result: {
-            entity: s.entity_id,
-            value: s.state,
-            unit: s.attributes.unit_of_measurement || '%'
+        try {
+          const s = await getState(id);
+          return res.json({
+            act, result: {
+              entity: s.entity_id,
+              value: s.state,
+              unit: s.attributes.unit_of_measurement || '%'
+            }
+          });
+        } catch (error) {
+          if (error.response?.status === 404) {
+            return res.json({
+              act, result: {
+                error: `Humidity sensor '${id}' not found. Please check your sensor entity IDs in Home Assistant.`,
+                suggestion: "Try 'sensor.humidity' or check your HA dashboard for the correct entity ID."
+              }
+            });
           }
-        });
+          throw error;
+        }
       }
       case 'GET_MOTION': {
         const id = act.entity_id && ENTITY_RE.test(act.entity_id) ? act.entity_id : 'binary_sensor.motion_sensor';

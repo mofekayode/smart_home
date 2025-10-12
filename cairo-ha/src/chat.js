@@ -97,7 +97,10 @@ Automations loaded: ${automations.count}
       let contextualReply = parsed.response || '';
       
       // Add specific result interpretation
-      if (result?.proposal) {
+      if (result?.result?.error) {
+        // Handle sensor not found errors
+        contextualReply = `⚠️ ${result.result.error}\n\n${result.result.suggestion || 'Please check your Home Assistant configuration.'}`;
+      } else if (result?.proposal) {
         // Handle automation suggestion results
         const { proposal, conflicts, apply_hint } = result;
         contextualReply = `I've created an automation suggestion for you:\n\n`;
