@@ -52,11 +52,15 @@ function printWelcome() {
 ║   Cairo Smart Home Assistant CLI     ║
 ╚══════════════════════════════════════╝${colors.reset}
 
+${colors.green}${colors.bright}Cairo:${colors.reset} Hey there! I'm Cairo, your smart home assistant. I can control lights, check sensors, manage automations, and chat about your home. What can I help you with?
+
 ${colors.gray}Type your message and press Enter. Type 'quit' or 'exit' to leave.
 Examples:
   - "Turn on the lights"
-  - "What's the temperature?"
+  - "What's the temperature and humidity?"
   - "Create an automation for the motion sensor"
+  - "Delete the kitchen lights automation"
+  - "Show me my automations"
 ${colors.reset}`);
 }
 
@@ -76,6 +80,12 @@ async function sendMessage(text) {
     
     // Handle response
     if (data.ok && data.result) {
+      // Show immediate acknowledgment if available
+      if (data.immediateResponse && data.immediateResponse !== data.reply) {
+        printCairo(data.immediateResponse);
+        // Small delay to simulate processing
+        await new Promise(resolve => setTimeout(resolve, 500));
+      }
       // Show Cairo's response with the results
       printCairo(data.reply || 'Action completed successfully');
       
@@ -87,6 +97,11 @@ async function sendMessage(text) {
           role: 'system', 
           content: `Last automation proposal: ${JSON.stringify(lastAutomationProposal)}` 
         });
+      }
+      
+      // Handle deletion success
+      if (data.result.deleted) {
+        console.log(`${colors.gray}[Deleted ${data.result.deleted} automation(s), ${data.result.remaining} remaining]${colors.reset}`);
       }
       
       // Optionally show debug details if needed
@@ -105,6 +120,11 @@ async function sendMessage(text) {
         console.log(`${colors.yellow}[Debug: Cairo returned action JSON instead of executing]${colors.reset}`);
         console.log(`${colors.gray}${data.reply}${colors.reset}`);
       } else {
+        // Show immediate response if it's different from the final reply
+        if (data.immediateResponse && data.immediateResponse !== data.reply) {
+          printCairo(data.immediateResponse);
+          await new Promise(resolve => setTimeout(resolve, 300));
+        }
         printCairo(data.reply);
       }
     } else {

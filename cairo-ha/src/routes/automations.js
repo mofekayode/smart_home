@@ -70,4 +70,37 @@ router.post('/reload', async (_req, res) => {
   res.json({ reloaded: out });
 });
 
+router.delete('/delete', async (req, res) => {
+  const { id, alias } = req.body || {};
+  if (!id && !alias) return res.status(400).json({ error: 'id or alias required' });
+  
+  const bak = await backupAutomations();
+  try {
+    const autos = await loadAutomations();
+    const filtered = autos.filter(a => {
+      if (id && a.id === id) return false;
+      if (alias && a.alias === alias) return false;
+      return true;
+    });
+    
+    if (filtered.length === autos.length) {
+      return res.status(404).json({ error: 'Automation not found' });
+    }
+    
+    await saveAutomations(filtered);
+    await haReloadAutomations();
+    
+    const deleted = autos.length - filtered.length;
+    return res.json({ 
+      ok: true, 
+      deleted, 
+      remaining: filtered.length,
+      backup: bak 
+    });
+  } catch (e) {
+    try { await fs.copyFile(bak, AUTOMATIONS_PATH); } catch {}
+    return res.status(500).json({ error: e.message, backup: bak });
+  }
+});
+
 export default router;

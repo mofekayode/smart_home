@@ -21,46 +21,64 @@ router.post('/', async (req, res) => {
   const automations = await callLocal('/automations');
 
   const system = `
-You are Cairo, an intelligent home assistant that can control devices, check sensors,
-and manage automations through provided API tools.
+You are Cairo, a friendly, witty, and helpful AI assistant for the smart home. 
+You have personality - be conversational, natural, and engaging like Jarvis from Iron Man.
 
-If the user asks you to perform something concrete (turn lights, check sensors, etc),
-return ONLY a valid JSON object with no additional text:
-{"action": {"endpoint": "...", "method": "...", "body": {...}}, "response": "short natural reply"}
+When the user asks you to DO something (control devices, check sensors, etc):
+Return a JSON object: {"action": {"endpoint": "...", "method": "...", "body": {...}}, "response": "initial response", "followup": "result response"}
 
-For conversations that don't require actions, respond with natural text only.
-Never invent endpoints; only use ones shown below.
+Use the "response" field for immediate acknowledgment (e.g., "Let me check that for you...")
+Use the "followup" field for what to say after getting the result (e.g., "It's 73 degrees - perfect temperature!")
+
+For regular conversation: Just respond naturally with personality.
+
+Guidelines for your personality:
+- Be casual and friendly: "Hey there!", "Sure thing!", "You got it!"
+- Add context: Instead of "73°F", say "It's a comfortable 73 degrees"
+- Be proactive: "Want me to adjust that?" or "I noticed..."
+- Use natural transitions: "Let me check that for you..." or "Hmm, let's see..."
+- Keep it brief but warm - this will be used for voice
+- Sometimes add subtle humor or personality
+- Remember you're Cairo, not a robot reading data
+- Vary your responses - don't always say the same thing
+- React to extreme values: "Whoa, 95 degrees!" or "Brrr, 58 degrees!"
+- Suggest actions when appropriate: "Pretty humid - want me to turn on a fan?"
+- Always provide two-part responses: acknowledgment first, then results
+- Add helpful suggestions after completing tasks
+- Keep conversations flowing naturally
 
 Available endpoints:
-- POST /command {"text":"..."} - For ALL device control and sensor queries (USE THIS FOR TEMPERATURE, HUMIDITY, LIGHTS, ETC)
+- POST /command {"text":"..."} - For ALL device control and sensor queries
 - GET /automations - List all automations
-- POST /automations/suggest {"text": "..."} - Suggest new automation (returns proposal with details)
+- POST /automations/suggest {"text": "..."} - Suggest new automation
 - POST /automations/apply {"proposal": {...}, "mode": "update|create"} - Apply automation
+- DELETE /automations/delete {"alias": "..."} - Delete an automation by name
 
-IMPORTANT: Always use /command endpoint for device control and sensor queries. Never use /state directly.
-
-Examples:
+Examples with personality:
 User: "turn on the lights"
-Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "turn on the lights"}}, "response": "Turning on the lights for you."}
+Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "turn on the lights"}}, "response": "Let me turn those lights on...", "followup": "Lights are on! Anything else you need?"}
 
 User: "what's the temperature?"
-Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "what's the temperature"}}, "response": "Checking the temperature for you..."}
+Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "what's the temperature"}}, "response": "Checking the temperature for you...", "followup": "#TEMP_RESULT#"}
 
 User: "what's the temperature and humidity?"
-Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "what's the temperature and humidity"}}, "response": "Let me check both the temperature and humidity for you..."}
+Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "what's the temperature and humidity"}}, "response": "Let me grab both readings for you...", "followup": "#CLIMATE_RESULT#"}
+
+User: "delete the automation for turning on lights"
+Return: {"action": {"endpoint": "/automations/delete", "method": "DELETE", "body": {"alias": "Turn on lights when bot1 is switched on"}}, "response": "I'll remove that automation...", "followup": "Done! The automation has been deleted. Need help setting up a new one?"}
 
 User: "check the humidity"
-Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "check the humidity"}}, "response": "Checking the humidity..."}
+Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "check the humidity"}}, "response": "Let me check the humidity sensor...", "followup": "#HUMIDITY_RESULT#"}
 
 User: "create automation to turn off lights when bot1 is on"
-Return: {"action": {"endpoint": "/automations/suggest", "method": "POST", "body": {"text": "turn off lights when bot1 is on"}}, "response": "Let me create that automation for you."}
+Return: {"action": {"endpoint": "/automations/suggest", "method": "POST", "body": {"text": "turn off lights when bot1 is on"}}, "response": "Let me create that automation for you...", "followup": "#AUTOMATION_RESULT#"}
 
 User: "yes" or "apply it" (when there's a recent automation proposal in conversation)
 Look for "Last automation proposal:" in the conversation history, then:
-Return: {"action": {"endpoint": "/automations/apply", "method": "POST", "body": {"proposal": [the proposal object], "mode": "create"}}, "response": "Applying the automation now."}
+Return: {"action": {"endpoint": "/automations/apply", "method": "POST", "body": {"proposal": [the proposal object], "mode": "create"}}, "response": "Applying that automation now...", "followup": "Perfect! Your automation is now active and running. Your home just got a bit smarter!"}
 
 User: "how are you?"
-Return: I'm doing well, thank you! I'm here to help with your smart home.
+Return: I'm doing great! Ready to help with anything you need - lights, temperature, automations, you name it.
 
 Capabilities: ${JSON.stringify(caps.capabilities).slice(0,500)}
 Automations loaded: ${automations.count}
@@ -96,6 +114,9 @@ Automations loaded: ${automations.count}
 
   if (parsed?.action) {
     try {
+      // Send immediate acknowledgment if provided
+      const immediateResponse = parsed.response || 'Let me handle that for you...';
+      
       const result = await callLocal(
         parsed.action.endpoint,
         parsed.action.method,
@@ -103,17 +124,21 @@ Automations loaded: ${automations.count}
       );
       
       // Generate a contextual response based on the result
-      let contextualReply = parsed.response || '';
+      let contextualReply = parsed.followup || parsed.response || '';
       
       // Add specific result interpretation
       if (result?.result?.error) {
-        // Handle sensor not found errors
-        contextualReply = `⚠️ ${result.result.error}\n\n${result.result.suggestion || 'Please check your Home Assistant configuration.'}`;
+        // Handle sensor not found errors conversationally
+        if (result.result.error.includes('not found')) {
+          contextualReply = `Hmm, I can't find that sensor. Let me know if you need help setting it up, or try asking about a different device.`;
+        } else {
+          contextualReply = `Oops, ran into a snag: ${result.result.error}. ${result.result.suggestion || 'Want me to try something else?'}`;
+        }
       } else if (result?.proposal) {
         // Handle automation suggestion results
         const { proposal, conflicts, apply_hint } = result;
-        contextualReply = `I've created an automation suggestion for you:\n\n`;
-        contextualReply += `**Name:** ${proposal.alias || 'Unnamed Automation'}\n`;
+        contextualReply = `Great idea! Here's what I've come up with:\n\n`;
+        contextualReply += `**${proposal.alias || 'Your Automation'}**\n`;
         
         if (proposal.description) {
           contextualReply += `**Description:** ${proposal.description}\n`;
@@ -155,13 +180,9 @@ Automations loaded: ${automations.count}
         
         // Handle conflicts
         if (conflicts && conflicts.length > 0) {
-          contextualReply += `\n\n⚠️ **Note:** This automation has conflicts with existing ones:\n`;
-          conflicts.forEach(c => {
-            contextualReply += `- ${c.type}: ${c.message || JSON.stringify(c)}\n`;
-          });
-          contextualReply += `\nWould you like me to update the existing automation or create a new one?`;
+          contextualReply += `\n\nHeads up - this overlaps with an existing automation. Should I update the existing one or create this as a new one? Just say "update" or "create new".`;
         } else {
-          contextualReply += `\n\nWould you like me to apply this automation? Just say "yes" or "apply it".`;
+          contextualReply += `\n\nLooks good to me! Say "yes" or "apply" to activate it, or let me know if you want any changes.`;
         }
         
         // Note: The client should maintain the proposal in conversation history for follow-up
@@ -170,74 +191,197 @@ Automations loaded: ${automations.count}
         // Handle automations list
         const count = result.count || result.automations.length;
         if (count === 0) {
-          contextualReply = `You don't have any automations set up yet. Would you like me to help you create one?`;
+          contextualReply = `Looks like you haven't set up any automations yet. Want me to help create your first one? I can automate lights, switches, and more based on sensors or time.`;
+        } else if (count === 1) {
+          const auto = result.automations[0];
+          const name = auto.alias || auto.id || 'Your automation';
+          contextualReply = `You've got one automation running: **${name}**. `;
+          if (auto.description) {
+            contextualReply += `It ${auto.description.toLowerCase()}.`;
+          }
+          contextualReply += ` Need me to modify it or add another?`;
         } else {
-          contextualReply = `You have ${count} automation${count !== 1 ? 's' : ''} configured:\n\n`;
+          contextualReply = `You've got ${count} automations keeping your home smart:\n\n`;
           result.automations.forEach((auto, index) => {
             const name = auto.alias || auto.id || `Automation ${index + 1}`;
-            const triggers = auto.trigger ? (Array.isArray(auto.trigger) ? auto.trigger.length : 1) : 0;
-            const actions = auto.action ? (Array.isArray(auto.action) ? auto.action.length : 1) : 0;
-            contextualReply += `${index + 1}. **${name}**\n`;
-            contextualReply += `   - Triggers: ${triggers} trigger${triggers !== 1 ? 's' : ''}\n`;
-            contextualReply += `   - Actions: ${actions} action${actions !== 1 ? 's' : ''}\n`;
+            contextualReply += `${index + 1}. **${name}**`;
             if (auto.description) {
-              contextualReply += `   - Description: ${auto.description}\n`;
+              contextualReply += ` - ${auto.description}`;
             }
             contextualReply += '\n';
           });
+          contextualReply += '\nWant me to add, modify, or remove any of these?';
         }
       } else if (result?.act?.intent === 'GET_CLIMATE' && result?.result) {
         // Handle combined temperature and humidity response
         const temp = result.result.temperature;
         const humid = result.result.humidity;
         
-        let tempStr = temp.mock 
-          ? `${temp.value}${temp.unit} (mock)` 
-          : `${temp.value}${temp.unit}`;
+        // Round temperature for more natural speech
+        const tempValue = Math.round(parseFloat(temp.value));
+        const humidValue = Math.round(parseFloat(humid.value));
         
-        let humidStr = humid.mock 
-          ? `${humid.value}${humid.unit} (mock)` 
-          : `${humid.value}${humid.unit}`;
+        // Create natural, conversational response
+        const tempComment = tempValue < 65 ? "pretty chilly" : 
+                           tempValue < 72 ? "nice and cool" :
+                           tempValue < 78 ? "comfortable" :
+                           tempValue < 85 ? "getting warm" : "quite warm";
         
-        contextualReply = `The temperature is ${tempStr} and the humidity is ${humidStr}.`;
-      } else if (result?.act?.intent === 'GET_TEMPERATURE' && result?.result?.value) {
-        if (result.result.mock) {
-          contextualReply = `The temperature reading is ${result.result.value}${result.result.unit} (Note: ${result.result.message}).`;
+        const humidComment = humidValue < 30 ? "The air's pretty dry" :
+                            humidValue < 50 ? "Humidity feels just right" :
+                            humidValue < 65 ? "It's a bit humid" :
+                            "It's quite humid in here";
+        
+        contextualReply = `It's ${tempValue} degrees - ${tempComment}. ${humidComment} at ${humidValue}%.`;
+        
+        // Add proactive suggestions based on conditions
+        if (tempValue > 78) {
+          contextualReply += ` Want me to turn on a fan or adjust the AC?`;
+        } else if (tempValue < 68) {
+          contextualReply += ` Should I turn up the heat?`;
+        } else if (humidValue > 65) {
+          contextualReply += ` I could turn on a dehumidifier if you'd like.`;
+        } else if (humidValue < 30) {
+          contextualReply += ` Would you like me to turn on a humidifier?`;
         } else {
-          contextualReply = `The temperature is currently ${result.result.value}°${result.result.unit || 'F'}.`;
+          contextualReply += ` Everything seems comfortable!`;
+        }
+      } else if (result?.act?.intent === 'GET_TEMPERATURE' && result?.result?.value) {
+        const tempValue = Math.round(parseFloat(result.result.value));
+        
+        // Time-based greeting variation
+        const hour = new Date().getHours();
+        let timeContext = "";
+        if (hour >= 5 && hour < 12) timeContext = "this morning";
+        else if (hour >= 12 && hour < 17) timeContext = "this afternoon";
+        else if (hour >= 17 && hour < 21) timeContext = "this evening";
+        else timeContext = "right now";
+        
+        // Temperature commentary
+        const comment = tempValue < 65 ? "Might want to turn up the heat!" : 
+                       tempValue < 72 ? "Nice and cool in here." :
+                       tempValue < 78 ? "Perfect temperature!" :
+                       tempValue < 85 ? "Getting a bit warm." : 
+                       "Pretty toasty! Maybe time for some AC?";
+        
+        if (result.result.mock) {
+          contextualReply = `I'm showing ${tempValue} degrees ${timeContext} (using test data). ${comment}`;
+        } else {
+          contextualReply = `It's ${tempValue} degrees ${timeContext}. ${comment}`;
+        }
+        
+        // Add suggestions based on temperature
+        if (tempValue > 78 || tempValue < 68) {
+          contextualReply += ` Would you like me to adjust anything?`;
         }
       } else if (result?.act?.intent === 'GET_HUMIDITY' && result?.result?.value) {
-        if (result.result.mock) {
-          contextualReply = `The humidity reading is ${result.result.value}${result.result.unit} (Note: ${result.result.message}).`;
+        const humidValue = Math.round(parseFloat(result.result.value));
+        
+        // Humidity comfort commentary
+        let comment = "";
+        if (humidValue < 30) {
+          comment = "Pretty dry - you might want to run a humidifier.";
+        } else if (humidValue < 50) {
+          comment = "That's right in the comfort zone!";
+        } else if (humidValue < 65) {
+          comment = "A bit humid but not too bad.";
         } else {
-          contextualReply = `The humidity is ${result.result.value}${result.result.unit || '%'}.`;
+          comment = "Quite humid - might feel a bit sticky.";
         }
+        
+        if (result.result.mock) {
+          contextualReply = `Humidity's at ${humidValue}% (test reading). ${comment}`;
+        } else {
+          contextualReply = `The humidity is ${humidValue}%. ${comment}`;
+        }
+        
+        // Suggest checking temperature too if they haven't recently
+        contextualReply += ` Want me to check the temperature as well?`;
       } else if (result?.act?.intent === 'GET_MOTION' && result?.result) {
-        contextualReply = result.result.motion 
-          ? `Motion detected! Last activity was ${new Date(result.result.last_changed).toLocaleString()}.`
-          : `No motion detected. Last activity was ${new Date(result.result.last_changed).toLocaleString()}.`;
+        const lastChange = new Date(result.result.last_changed);
+        const now = new Date();
+        const minutesAgo = Math.round((now - lastChange) / 60000);
+        
+        let timeAgo = minutesAgo === 0 ? "just now" :
+                     minutesAgo === 1 ? "a minute ago" :
+                     minutesAgo < 60 ? `${minutesAgo} minutes ago` :
+                     minutesAgo < 120 ? "about an hour ago" :
+                     `${Math.round(minutesAgo / 60)} hours ago`;
+        
+        if (result.result.motion) {
+          contextualReply = `Yes, I'm detecting motion! Last activity was ${timeAgo}.`;
+        } else {
+          contextualReply = minutesAgo < 5 ? 
+            `No motion right now, but there was activity ${timeAgo}.` :
+            `All quiet - no motion since ${timeAgo}.`;
+        }
       } else if (result?.act?.intent === 'LIGHT_ON') {
-        contextualReply = `I've turned on the lights for you.`;
+        const variations = [
+          "Lights are on!",
+          "Let there be light!",
+          "Illuminating the room for you.",
+          "Lights activated.",
+          "Brightening things up!"
+        ];
+        contextualReply = variations[Math.floor(Math.random() * variations.length)];
+        contextualReply += ` Need me to adjust the brightness?`;
       } else if (result?.act?.intent === 'LIGHT_OFF') {
-        contextualReply = `I've turned off the lights.`;
+        const variations = [
+          "Lights are off.",
+          "Going dark.",
+          "Lights out!",
+          "Dimming to darkness.",
+          "All lights extinguished."
+        ];
+        contextualReply = variations[Math.floor(Math.random() * variations.length)];
+        contextualReply += ` Let me know when you need them back on.`;
       } else if (result?.act?.intent === 'LIGHT_SET_BRIGHTNESS') {
-        contextualReply = `I've adjusted the brightness as requested.`;
+        const brightness = result?.act?.brightness_pct || 50;
+        if (brightness < 30) {
+          contextualReply = `Setting a nice dim mood - ${brightness}% brightness.`;
+        } else if (brightness < 70) {
+          contextualReply = `Perfect ambient lighting at ${brightness}%.`;
+        } else {
+          contextualReply = `Nice and bright at ${brightness}%!`;
+        }
       } else if (result?.act?.intent?.includes('SWITCH_ON')) {
-        contextualReply = `The switch has been turned on.`;
+        contextualReply = `Switch is on - all powered up!`;
       } else if (result?.act?.intent?.includes('SWITCH_OFF')) {
-        contextualReply = `The switch has been turned off.`;
+        contextualReply = `Switch is off - powered down.`;
       } else if (result?.ok && result?.reloaded) {
         // Automation was applied successfully
-        contextualReply = `✅ Automation successfully ${result.mode === 'update' ? 'updated' : 'created'} and activated! Home Assistant has reloaded the automations.`;
+        const action = result.mode === 'update' ? 'updated' : 'created';
+        const exclamations = [
+          `Perfect! Your automation has been ${action}.`,
+          `All set! The automation is ${action} and running.`,
+          `Done! Your new automation is ${action} and active.`,
+          `Success! Automation ${action} and ready to go.`
+        ];
+        contextualReply = exclamations[Math.floor(Math.random() * exclamations.length)];
+        
         if (result.conflicts && result.conflicts.length > 0) {
-          contextualReply += `\n\nResolved ${result.conflicts.length} conflict(s) by ${result.mode === 'update' ? 'updating' : 'creating new'}.`;
+          contextualReply += ` I ${result.mode === 'update' ? 'updated the existing one' : 'created a new one'} to handle the conflicts.`;
+        }
+        contextualReply += ` Your smart home just got smarter!`;
+      } else if (result?.deleted) {
+        // Automation deletion success
+        const remaining = result.remaining || 0;
+        if (remaining === 0) {
+          contextualReply = `Done! I've removed that automation. You don't have any automations set up now. Want to create some new ones?`;
+        } else {
+          contextualReply = `All set! The automation has been deleted. You have ${remaining} automation${remaining !== 1 ? 's' : ''} still running. Need help with anything else?`;
         }
       } else if (result?.state) {
         // Generic state query
         contextualReply = `The current state is: ${result.state}`;
       }
       
-      return res.json({ ok: true, result, reply: contextualReply });
+      return res.json({ 
+        ok: true, 
+        result, 
+        immediateResponse,
+        reply: contextualReply 
+      });
     } catch (e) {
       return res.status(400).json({ error: e.message, raw: msg });
     }
