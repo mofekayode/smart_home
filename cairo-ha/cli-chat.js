@@ -27,6 +27,8 @@ const rl = readline.createInterface({
 
 // Conversation history
 let conversationHistory = [];
+// Store last automation proposal for follow-up
+let lastAutomationProposal = null;
 
 // Helper functions
 function printCairo(message) {
@@ -76,6 +78,16 @@ async function sendMessage(text) {
     if (data.ok && data.result) {
       // Action was performed - Cairo should provide the interpretation
       printCairo(data.reply || 'Action completed successfully');
+      
+      // Store automation proposal if present for follow-up
+      if (data.result.proposal) {
+        lastAutomationProposal = data.result.proposal;
+        // Add to history so Cairo knows about it
+        conversationHistory.push({ 
+          role: 'system', 
+          content: `Last automation proposal: ${JSON.stringify(lastAutomationProposal)}` 
+        });
+      }
       
       // Optionally show debug details if needed
       if (process.env.DEBUG === 'true') {

@@ -35,17 +35,20 @@ Available endpoints:
 - POST /command {"text":"..."} - For device control (lights, switches, sensors)
 - GET /state?entity=... - Get specific entity state
 - GET /automations - List all automations
-- POST /automations/suggest {"text": "..."} - Suggest automation
+- POST /automations/suggest {"text": "..."} - Suggest new automation (returns proposal with details)
+- POST /automations/diff {"proposal": {...}, "mode": "update|create"} - Check conflicts
+- POST /automations/apply {"proposal": {...}, "mode": "update|create"} - Apply automation
 
 Examples:
 User: "turn on the lights"
 Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "turn on the lights"}}, "response": "Turning on the lights for you."}
 
-User: "what's the temperature?"
-Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "what's the temperature"}}, "response": "Let me check the temperature for you."}
+User: "create automation to turn off lights when bot1 is on"
+Return: {"action": {"endpoint": "/automations/suggest", "method": "POST", "body": {"text": "turn off lights when bot1 is on"}}, "response": "Let me create that automation for you."}
 
-User: "what automations do I have?"
-Return: {"action": {"endpoint": "/automations", "method": "GET", "body": {}}, "response": "Let me show you your current automations."}
+User: "yes" or "apply it" (when there's a recent automation proposal in conversation)
+Look for "Last automation proposal:" in the conversation history, then:
+Return: {"action": {"endpoint": "/automations/apply", "method": "POST", "body": {"proposal": [the proposal object], "mode": "create"}}, "response": "Applying the automation now."}
 
 User: "how are you?"
 Return: I'm doing well, thank you! I'm here to help with your smart home.
@@ -94,7 +97,64 @@ Automations loaded: ${automations.count}
       let contextualReply = parsed.response || '';
       
       // Add specific result interpretation
-      if (result?.automations && Array.isArray(result.automations)) {
+      if (result?.proposal) {
+        // Handle automation suggestion results
+        const { proposal, conflicts, apply_hint } = result;
+        contextualReply = `I've created an automation suggestion for you:\n\n`;
+        contextualReply += `**Name:** ${proposal.alias || 'Unnamed Automation'}\n`;
+        
+        if (proposal.description) {
+          contextualReply += `**Description:** ${proposal.description}\n`;
+        }
+        
+        // Describe triggers
+        contextualReply += `\n**When:** `;
+        if (Array.isArray(proposal.trigger)) {
+          contextualReply += proposal.trigger.map(t => {
+            if (t.platform === 'state' && t.entity_id) {
+              return `${t.entity_id} changes to ${t.to || 'any state'}`;
+            }
+            return JSON.stringify(t);
+          }).join(' OR ');
+        } else if (proposal.trigger) {
+          if (proposal.trigger.platform === 'state' && proposal.trigger.entity_id) {
+            contextualReply += `${proposal.trigger.entity_id} changes to ${proposal.trigger.to || 'any state'}`;
+          } else {
+            contextualReply += JSON.stringify(proposal.trigger);
+          }
+        }
+        
+        // Describe actions
+        contextualReply += `\n**Then:** `;
+        if (Array.isArray(proposal.action)) {
+          contextualReply += proposal.action.map(a => {
+            if (a.service) {
+              return `${a.service} ${a.target?.entity_id || a.entity_id || ''}`;
+            }
+            return JSON.stringify(a);
+          }).join(', then ');
+        } else if (proposal.action) {
+          if (proposal.action.service) {
+            contextualReply += `${proposal.action.service} ${proposal.action.target?.entity_id || proposal.action.entity_id || ''}`;
+          } else {
+            contextualReply += JSON.stringify(proposal.action);
+          }
+        }
+        
+        // Handle conflicts
+        if (conflicts && conflicts.length > 0) {
+          contextualReply += `\n\n⚠️ **Note:** This automation has conflicts with existing ones:\n`;
+          conflicts.forEach(c => {
+            contextualReply += `- ${c.type}: ${c.message || JSON.stringify(c)}\n`;
+          });
+          contextualReply += `\nWould you like me to update the existing automation or create a new one?`;
+        } else {
+          contextualReply += `\n\nWould you like me to apply this automation? Just say "yes" or "apply it".`;
+        }
+        
+        // Note: The client should maintain the proposal in conversation history for follow-up
+        
+      } else if (result?.automations && Array.isArray(result.automations)) {
         // Handle automations list
         const count = result.count || result.automations.length;
         if (count === 0) {
@@ -132,6 +192,12 @@ Automations loaded: ${automations.count}
         contextualReply = `The switch has been turned on.`;
       } else if (result?.act?.intent?.includes('SWITCH_OFF')) {
         contextualReply = `The switch has been turned off.`;
+      } else if (result?.ok && result?.reloaded) {
+        // Automation was applied successfully
+        contextualReply = `✅ Automation successfully ${result.mode === 'update' ? 'updated' : 'created'} and activated! Home Assistant has reloaded the automations.`;
+        if (result.conflicts && result.conflicts.length > 0) {
+          contextualReply += `\n\nResolved ${result.conflicts.length} conflict(s) by ${result.mode === 'update' ? 'updating' : 'creating new'}.`;
+        }
       } else if (result?.state) {
         // Generic state query
         contextualReply = `The current state is: ${result.state}`;
