@@ -47,7 +47,9 @@ router.post('/', async (req, res) => {
     }
 
     const targets = normalizeTargets(act);
-    if (act.intent !== 'GET_STATE' && !targets) {
+    // Skip target validation for intents that have default sensors
+    const intentsWithDefaults = ['GET_TEMPERATURE', 'GET_HUMIDITY', 'GET_MOTION', 'GET_STATE'];
+    if (!intentsWithDefaults.includes(act.intent) && !targets) {
       return res.status(400).json({ error: 'no valid target entity', act, hint: 'use /introspect/entities to see available ids' });
     }
 
