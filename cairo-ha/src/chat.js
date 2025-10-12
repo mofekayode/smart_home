@@ -85,7 +85,35 @@ Automations loaded: ${automations.count}
         parsed.action.method,
         parsed.action.body
       );
-      return res.json({ ok: true, result, reply: parsed.response });
+      
+      // Generate a contextual response based on the result
+      let contextualReply = parsed.response || '';
+      
+      // Add specific result interpretation
+      if (result?.act?.intent === 'GET_TEMPERATURE' && result?.result?.value) {
+        contextualReply = `The temperature is currently ${result.result.value}°${result.result.unit || 'F'}.`;
+      } else if (result?.act?.intent === 'GET_HUMIDITY' && result?.result?.value) {
+        contextualReply = `The humidity is ${result.result.value}${result.result.unit || '%'}.`;
+      } else if (result?.act?.intent === 'GET_MOTION' && result?.result) {
+        contextualReply = result.result.motion 
+          ? `Motion detected! Last activity was ${new Date(result.result.last_changed).toLocaleString()}.`
+          : `No motion detected. Last activity was ${new Date(result.result.last_changed).toLocaleString()}.`;
+      } else if (result?.act?.intent === 'LIGHT_ON') {
+        contextualReply = `I've turned on the lights for you.`;
+      } else if (result?.act?.intent === 'LIGHT_OFF') {
+        contextualReply = `I've turned off the lights.`;
+      } else if (result?.act?.intent === 'LIGHT_SET_BRIGHTNESS') {
+        contextualReply = `I've adjusted the brightness as requested.`;
+      } else if (result?.act?.intent?.includes('SWITCH_ON')) {
+        contextualReply = `The switch has been turned on.`;
+      } else if (result?.act?.intent?.includes('SWITCH_OFF')) {
+        contextualReply = `The switch has been turned off.`;
+      } else if (result?.state) {
+        // Generic state query
+        contextualReply = `The current state is: ${result.state}`;
+      }
+      
+      return res.json({ ok: true, result, reply: contextualReply });
     } catch (e) {
       return res.status(400).json({ error: e.message, raw: msg });
     }

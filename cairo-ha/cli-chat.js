@@ -74,10 +74,12 @@ async function sendMessage(text) {
     
     // Handle response
     if (data.ok && data.result) {
-      // Action was performed
+      // Action was performed - Cairo should provide the interpretation
       printCairo(data.reply || 'Action completed successfully');
-      if (data.result && typeof data.result === 'object') {
-        console.log(`${colors.gray}Result: ${JSON.stringify(data.result, null, 2)}${colors.reset}`);
+      
+      // Optionally show debug details if needed
+      if (process.env.DEBUG === 'true') {
+        console.log(`${colors.gray}[Debug] Raw result: ${JSON.stringify(data.result, null, 2)}${colors.reset}`);
       }
     } else if (data.error) {
       // Error from server
