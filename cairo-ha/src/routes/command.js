@@ -20,10 +20,23 @@ router.post('/', async (req, res) => {
     if (!text) return res.status(400).json({ error: 'text required' });
 
     const catalog = await getCatalogCached();
-    const act = await parseToAction(text, catalog);
+    let act = await parseToAction(text, catalog);
     
     // Debug logging
     console.log('Parsed action:', JSON.stringify(act));
+    
+    // OVERRIDE: Fix common temperature/humidity queries that NLP fails to parse
+    const lowerText = text.toLowerCase();
+    if (lowerText.includes('temperature') && !act.intent?.includes('TEMP')) {
+      console.log('OVERRIDE: Detected temperature query, forcing GET_TEMPERATURE');
+      act = { intent: 'GET_TEMPERATURE' };
+    } else if (lowerText.includes('humidity') && !act.intent?.includes('HUMID')) {
+      console.log('OVERRIDE: Detected humidity query, forcing GET_HUMIDITY');
+      act = { intent: 'GET_HUMIDITY' };
+    } else if (lowerText.includes('motion') && !act.intent?.includes('MOTION')) {
+      console.log('OVERRIDE: Detected motion query, forcing GET_MOTION');
+      act = { intent: 'GET_MOTION' };
+    }
 
     if (act.intent === 'EXPLAIN_UNSUPPORTED') {
       return res.status(400).json({ error: 'unsupported', act });
