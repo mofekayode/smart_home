@@ -76,10 +76,26 @@ async function sendMessage(text) {
     if (data.ok && data.result) {
       // Action was performed
       printCairo(data.reply || 'Action completed successfully');
-      printAction(data.action || {}, data.result);
+      if (data.result && typeof data.result === 'object') {
+        console.log(`${colors.gray}Result: ${JSON.stringify(data.result, null, 2)}${colors.reset}`);
+      }
+    } else if (data.error) {
+      // Error from server
+      printError(data.error);
+      if (data.raw) {
+        console.log(`${colors.gray}Raw response: ${data.raw}${colors.reset}`);
+      }
     } else if (data.reply) {
-      // Normal conversation
-      printCairo(data.reply);
+      // Normal conversation - check if Cairo is showing us JSON (debugging)
+      if (data.reply.includes('"action"') && data.reply.includes('"endpoint"')) {
+        console.log(`${colors.yellow}[Debug: Cairo returned action JSON instead of executing]${colors.reset}`);
+        console.log(`${colors.gray}${data.reply}${colors.reset}`);
+      } else {
+        printCairo(data.reply);
+      }
+    } else {
+      // Unexpected response format
+      console.log(`${colors.gray}Unexpected response: ${JSON.stringify(data)}${colors.reset}`);
     }
     
     // Add Cairo's response to history

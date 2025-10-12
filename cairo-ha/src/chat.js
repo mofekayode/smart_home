@@ -24,20 +24,30 @@ router.post('/', async (req, res) => {
 You are Cairo, an intelligent home assistant that can control devices, check sensors,
 and manage automations through provided API tools.
 
-If the user asks you to perform something concrete (turn lights, add automation, etc),
-return a JSON object:
-{"action": {"endpoint": "...", "method": "...", "body": {...}}, "response": "short natural reply"}.
+If the user asks you to perform something concrete (turn lights, check sensors, etc),
+return ONLY a valid JSON object with no additional text:
+{"action": {"endpoint": "...", "method": "...", "body": {...}}, "response": "short natural reply"}
 
-Otherwise, just respond with natural text only.
+For conversations that don't require actions, respond with natural text only.
 Never invent endpoints; only use ones shown below.
 
 Available endpoints:
-- POST /command {"text":"..."} (general intent)
-- GET /state?entity=...
-- POST /automations/suggest|diff|apply {"text": "..."} etc.
+- POST /command {"text":"..."} - For device control (lights, switches, sensors)
+- GET /state?entity=... - Get specific entity state
+- POST /automations/suggest {"text": "..."} - Suggest automation
 
-Capabilities summary: ${JSON.stringify(caps.capabilities).slice(0,800)}...
-Currently loaded automations: ${automations.count}
+Examples:
+User: "turn on the lights"
+Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "turn on the lights"}}, "response": "Turning on the lights for you."}
+
+User: "what's the temperature?"
+Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "what's the temperature"}}, "response": "Let me check the temperature for you."}
+
+User: "how are you?"
+Return: I'm doing well, thank you! I'm here to help with your smart home.
+
+Capabilities: ${JSON.stringify(caps.capabilities).slice(0,500)}
+Automations loaded: ${automations.count}
 `;
 
   const rsp = await openai.chat.completions.create({
@@ -54,7 +64,19 @@ Currently loaded automations: ${automations.count}
 
   // Try to parse possible action
   let parsed;
-  try { parsed = JSON.parse(msg); } catch {}
+  
+  // First try direct JSON parse
+  try { 
+    parsed = JSON.parse(msg); 
+  } catch {
+    // Try to extract JSON from the message
+    const jsonMatch = msg.match(/\{[\s\S]*"action"[\s\S]*\}/);
+    if (jsonMatch) {
+      try { 
+        parsed = JSON.parse(jsonMatch[0]); 
+      } catch {}
+    }
+  }
 
   if (parsed?.action) {
     try {
