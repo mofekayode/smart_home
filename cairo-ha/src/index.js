@@ -19,13 +19,14 @@ app.use('/chat', chatRouter);
 app.use('/automations', automationsRouter);
 app.use('/light', lightsRouter);
 app.use('/switch', switchesRouter);
-app.use('/', sensorsRouter);
 app.use('/command', commandRouter);
 app.use('/intent', commandRouter);
 app.use('/introspect', introspectionRouter);
 app.use('/capabilities', capabilitiesRouter);
 app.use('/help', helpRouter);
 app.use('/health', healthRouter);
+// Mount sensor routes last since they use root path
+app.use('/', sensorsRouter);
 
 // Start server
 const port = Number(process.env.PORT || 7860);
