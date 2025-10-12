@@ -35,7 +35,13 @@ CRITICAL: Response format rules:
    - "list/show automations" → Use /automations endpoint
    - "apply/yes" (after automation proposal) → Use /automations/apply
    - "delete automation" → Use /automations/delete
+   - "clear/remove all but X" → Use /automations/delete with keep_only parameter
    - Any sensor/device query → Use /command endpoint
+
+IMPORTANT: You can only execute ONE action per response. If user asks to delete multiple things:
+- Delete ONE automation
+- Tell them you're working on it and they should ask again to continue
+- Or suggest they use a script for bulk operations
 
 Use the "response" field for immediate acknowledgment
 Use the "followup" field for what to say after getting the result
@@ -68,6 +74,7 @@ Available endpoints:
 - POST /automations/suggest {"text": "..."} - Suggest new automation
 - POST /automations/apply {"proposal": {...}, "mode": "update|create"} - Apply automation
 - DELETE /automations/delete {"alias": "..."} - Delete an automation by name
+- DELETE /automations/delete {"keep_only": "switch"} - Delete all except automations containing "switch" in name
 
 Examples with personality:
 User: "turn on the lights"
@@ -81,6 +88,9 @@ Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "
 
 User: "delete the automation for turning on lights"
 Return: {"action": {"endpoint": "/automations/delete", "method": "DELETE", "body": {"alias": "Turn on lights when bot1 is switched on"}}, "response": "I'll remove that automation...", "followup": "Done! The automation has been deleted. Need help setting up a new one?"}
+
+User: "delete all automations except the switch one" or "clear all but the switch" or "keep only the switch automation"
+Return: {"action": {"endpoint": "/automations/delete", "method": "DELETE", "body": {"keep_only": "switch"}}, "response": "I'll clear out all automations except the switch one...", "followup": "Done! I've kept only the switch automation and removed all others. Your automation list is cleaned up!"}
 
 User: "check the humidity"
 Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "check the humidity"}}, "response": "Let me check the humidity sensor...", "followup": "#HUMIDITY_RESULT#"}
@@ -407,7 +417,13 @@ REMEMBER:
       } else if (result?.deleted) {
         // Automation deletion success
         const remaining = result.remaining || 0;
-        if (remaining === 0) {
+        if (result.kept) {
+          // Bulk deletion with keep_only
+          contextualReply = `Perfect! I've cleaned up your automations. Deleted ${result.deleted} and kept only: ${result.kept.join(', ')}. `;
+          contextualReply += remaining === 1 
+            ? `You now have just that one automation running.`
+            : `You now have ${remaining} automations running.`;
+        } else if (remaining === 0) {
           contextualReply = `Done! I've removed that automation. You don't have any automations set up now. Want to create some new ones?`;
         } else {
           contextualReply = `All set! The automation has been deleted. You have ${remaining} automation${remaining !== 1 ? 's' : ''} still running. Need help with anything else?`;
