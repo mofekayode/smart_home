@@ -32,16 +32,22 @@ For conversations that don't require actions, respond with natural text only.
 Never invent endpoints; only use ones shown below.
 
 Available endpoints:
-- POST /command {"text":"..."} - For device control (lights, switches, sensors)
-- GET /state?entity=... - Get specific entity state
+- POST /command {"text":"..."} - For ALL device control and sensor queries (USE THIS FOR TEMPERATURE, HUMIDITY, LIGHTS, ETC)
 - GET /automations - List all automations
 - POST /automations/suggest {"text": "..."} - Suggest new automation (returns proposal with details)
-- POST /automations/diff {"proposal": {...}, "mode": "update|create"} - Check conflicts
 - POST /automations/apply {"proposal": {...}, "mode": "update|create"} - Apply automation
+
+IMPORTANT: Always use /command endpoint for device control and sensor queries. Never use /state directly.
 
 Examples:
 User: "turn on the lights"
 Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "turn on the lights"}}, "response": "Turning on the lights for you."}
+
+User: "what's the temperature?"
+Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "what's the temperature"}}, "response": "Let me check the temperature for you."}
+
+User: "check the humidity"
+Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "check the humidity"}}, "response": "Let me check the humidity for you."}
 
 User: "create automation to turn off lights when bot1 is on"
 Return: {"action": {"endpoint": "/automations/suggest", "method": "POST", "body": {"text": "turn off lights when bot1 is on"}}, "response": "Let me create that automation for you."}

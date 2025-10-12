@@ -5,7 +5,20 @@ const router = Router();
 
 router.get('/state', async (req, res) => {
   const id = req.query.entity;
+  console.log(`/state endpoint called with entity: "${id}"`);
+  console.log('Call stack:', new Error().stack);
+  
   if (!id) return res.status(400).json({ error: 'entity required' });
+  
+  // BLOCK invalid entity IDs completely
+  if (id === 'temperature' || id === 'humidity' || id === 'motion') {
+    console.log(`BLOCKED: Invalid entity ID "${id}" - returning error`);
+    return res.status(400).json({
+      error: `Invalid entity ID: "${id}"`,
+      message: `Entity IDs must be in format 'domain.name' like 'sensor.temperature', not just '${id}'`,
+      suggestion: 'Use the /command endpoint instead for natural language queries'
+    });
+  }
   
   try {
     const state = await getState(id);
