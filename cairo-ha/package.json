@@ -6,7 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "chat": "node cli-chat.js",
-    "start": "node src/index.js"
+    "start": "node src/index.js",
+    "voice": "node src/voice_cli.js",
+    "voice:test": "node src/voice_speak.js"
   },
   "keywords": [],
   "author": "",
