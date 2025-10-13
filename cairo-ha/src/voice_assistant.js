@@ -19,10 +19,14 @@ async function listen(duration = 5000) {
   console.log(`🎙  Listening for ${duration/1000} seconds...`);
   const file = "/tmp/cairo_voice.wav";
 
+  // Use device from env or try bluetooth/pulse for better compatibility
+  const audioDevice = process.env.AUDIO_DEVICE || "pulse";
+  
   const rec = record.record({
     sampleRate: 16000,
     channels: 1,
-    device: "default",
+    device: audioDevice,
+    verbose: process.env.DEBUG === "true"
   });
 
   const stream = rec.stream().pipe(fs.createWriteStream(file));
