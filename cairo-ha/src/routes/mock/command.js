@@ -101,11 +101,33 @@ router.post('/', async (req, res) => {
       };
     }
 
+    // Handle greetings and simple responses first
+    const lowerCmd = text.toLowerCase();
+    
+    // Check if this is a greeting or simple interaction
+    const isGreeting = lowerCmd.includes('hello') || lowerCmd.includes('hi') || 
+                      lowerCmd.includes('hey') || lowerCmd.includes('thanks') ||
+                      lowerCmd.includes('thank you') || lowerCmd.includes('goodbye') ||
+                      lowerCmd.includes('bye');
+    
+    // Check if this is a simple yes/no response (should be handled by chat.js context)
+    const isSimpleResponse = (lowerCmd === 'yes' || lowerCmd === 'no' || 
+                             lowerCmd === 'sure' || lowerCmd === 'okay' || 
+                             lowerCmd === 'nah' || lowerCmd === 'nope');
+    
+    // If it's a greeting with Cairo's name or simple response, don't provide clarification
+    if ((isGreeting && lowerCmd.includes('cairo')) || isSimpleResponse) {
+      console.log('[MOCK] Greeting or contextual response - passing through');
+      return res.json({ 
+        act: { intent: 'GREETING_OR_CONTEXT' },
+        greeting: isGreeting,
+        contextual: isSimpleResponse
+      });
+    }
+    
     // Handle complex scenarios by converting them to actionable intents
     if (act.intent === 'EXPLAIN_UNSUPPORTED' || !act.intent) {
       console.log('[MOCK] Handling complex scenario:', text);
-      
-      const lowerCmd = text.toLowerCase();
       
       // Convert complex scenarios to specific actions
       if (lowerCmd.includes('mood') && lowerCmd.includes('read')) {
