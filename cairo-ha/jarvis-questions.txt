@@ -1,0 +1,251 @@
+═══════════════════════════════════════════════════════════════════════════════
+                    CAIRO JARVIS-STYLE COMMAND EXAMPLES
+           Smart Home Control Questions for Your Connected Devices
+═══════════════════════════════════════════════════════════════════════════════
+
+DEVICES AVAILABLE:
+• 2 Lights: short_lamp, tall_lamp
+• 1 Switch: bot1
+• Temperature sensor
+• Humidity sensor  
+• Motion sensor
+
+═══════════════════════════════════════════════════════════════════════════════
+                         🎯 CONVERSATIONAL QUERIES
+═══════════════════════════════════════════════════════════════════════════════
+
+ENVIRONMENTAL STATUS
+━━━━━━━━━━━━━━━━━━━━━
+"Cairo, give me a full environmental report"
+"What's the climate situation in here?"
+"Is it comfortable in the house right now?"
+"How's the atmosphere feeling?"
+"Give me the room's vitals"
+"What's it like in here?"
+"Am I going to be cold?"
+"Is it stuffy in here?"
+"Should I open a window?"
+"What should I wear around the house?"
+"Is it too humid for my electronics?"
+"Will my guests be comfortable?"
+
+INTELLIGENT LIGHTING CONTROL
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"Cairo, set the mood for reading"
+"Dim the lights to 30% for movie time"
+"Give me some ambient lighting"
+"Light up the room, I need to work"
+"Set the short lamp to 70% and turn off the tall one"
+"Toggle the tall lamp"
+"Kill all the lights"
+"Illuminate my workspace"
+"Set evening mode"
+"Match the lighting to sunset"
+"Give me just enough light to navigate"
+"Maximum brightness, I dropped something"
+"Switch to energy saving mode"
+
+MOTION & PRESENCE AWARENESS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"Is anyone in the room?"
+"When was the last movement detected?"
+"Has there been any activity recently?"
+"Am I alone in here?"
+"Did someone just walk by?"
+"Check for intruders"
+"How long has the room been empty?"
+"Is the house secure?"
+"Any ghosts moving around?"
+"Motion status report"
+
+SWITCH CONTROL (BOT1)
+━━━━━━━━━━━━━━━━━━━━━
+"Activate bot1"
+"Toggle the switch"
+"Power up bot1"
+"Kill the switch"
+"What's the status of bot1?"
+"Is the switch on or off?"
+"Flip bot1 for me"
+"Engage the bot"
+
+═══════════════════════════════════════════════════════════════════════════════
+                        🤖 FUTURISTIC SCENARIOS
+═══════════════════════════════════════════════════════════════════════════════
+
+MORNING ROUTINE
+━━━━━━━━━━━━━━━━
+"Good morning Cairo, what's the house status?"
+"Wake up the house"
+"Prepare the room for my morning workout"
+"Is it too cold for my morning shower?"
+"Set up for breakfast time"
+
+WORK FROM HOME
+━━━━━━━━━━━━━━━
+"Optimize the environment for a video call"
+"Set up my focus mode - dim lights, check climate"
+"Is the humidity okay for my laptop?"
+"Create a productive atmosphere"
+"Meeting mode - brighten the room"
+
+EVENING WIND DOWN
+━━━━━━━━━━━━━━━━━━
+"Cairo, prepare for bedtime"
+"Set relaxation mode"
+"Dim everything to 20%"
+"Night mode please"
+"Time to sleep, shut it all down"
+"Leave just the tall lamp on low"
+
+SECURITY & MONITORING
+━━━━━━━━━━━━━━━━━━━━━
+"Cairo, entering security mode"
+"Monitor for any movement"
+"Going out, watch the house"
+"Alert mode - all sensors active"
+"Has anything moved while I was gone?"
+"Give me a security summary"
+
+ENERGY & EFFICIENCY
+━━━━━━━━━━━━━━━━━━━
+"What's currently consuming power?"
+"Minimize energy usage"
+"Eco mode please"
+"Turn off everything unnecessary"
+"What devices are active?"
+
+═══════════════════════════════════════════════════════════════════════════════
+                        🚀 ADVANCED AUTOMATIONS
+═══════════════════════════════════════════════════════════════════════════════
+
+"Cairo, create an automation that turns on lights when motion is detected"
+"Set up a rule to turn off all lights when bot1 is activated"
+"Make the lights follow the motion sensor"
+"Create a temperature-based alert"
+"If it gets too humid, remind me to open windows"
+"Automate evening lighting at sunset"
+"When I leave, turn everything off"
+"Flash the lights when motion is detected as an alert"
+"Create a morning routine that runs at 7am"
+"If no motion for 30 minutes, enter power save mode"
+"Set up party mode - lights respond to movement"
+"Create a vacation mode that simulates presence"
+
+═══════════════════════════════════════════════════════════════════════════════
+                        💬 NATURAL CONVERSATIONS
+═══════════════════════════════════════════════════════════════════════════════
+
+"Hey Cairo, how's everything?"
+"Run a full diagnostic"
+"What's your status report?"
+"Optimize my environment"
+"Make it cozy in here"
+"I'm cold, any suggestions?"
+"Too bright, tone it down"
+"Perfect temperature for sleeping?"
+"Is everything normal?"
+"Any anomalies to report?"
+"What do you recommend?"
+"Surprise me with the lighting"
+"Set the scene for dinner"
+"Game time lighting please"
+"Create some ambiance"
+
+═══════════════════════════════════════════════════════════════════════════════
+                     🎬 IRON MAN JARVIS STYLE
+═══════════════════════════════════════════════════════════════════════════════
+
+"Cairo, status report"
+"Initialize home systems"
+"Run preflight check"
+"All systems online?"
+"Engage protocol seven" (custom automation)
+"House to standby mode"
+"Full environmental scan"
+"Tactical assessment of the room"
+"Energy levels?"
+"Commence shutdown sequence"
+"Wake up, we have work to do"
+"Time to save some energy"
+"Lock it down"
+"Fire up everything"
+"Give me everything you've got"
+"Subtle lighting, I'm thinking"
+"Let's be efficient today"
+"Maximum comfort settings"
+"Activate stealth mode - minimum lights"
+"Full illumination, now"
+
+═══════════════════════════════════════════════════════════════════════════════
+                        🔮 CONTEXTUAL QUERIES
+═══════════════════════════════════════════════════════════════════════════════
+
+"Based on the temperature, should I wear a sweater?"
+"Is it too humid for painting?"
+"Good conditions for a nap?"
+"Will my plants be happy with this humidity?"
+"Is it dry enough to leave windows open?"
+"Motion patterns for the last hour?"
+"Compare current temperature to this morning"
+"Is it warmer or cooler than yesterday?"
+"Optimal settings for movie watching?"
+"Best lighting for reading?"
+"Should I turn on a dehumidifier?"
+"Is the environment suitable for yoga?"
+"Good time to air out the room?"
+
+═══════════════════════════════════════════════════════════════════════════════
+                         ⚡ QUICK COMMANDS
+═══════════════════════════════════════════════════════════════════════════════
+
+"Lights"
+"Temperature"
+"Humidity" 
+"Motion"
+"Everything off"
+"Everything on"
+"Status"
+"Report"
+"Brightness 50%"
+"Dim"
+"Bright"
+"Check all"
+"Kill switch"
+"Mood lighting"
+"Reading mode"
+"Sleep mode"
+"Wake up"
+"Party mode"
+"Emergency lights"
+"Blackout"
+
+═══════════════════════════════════════════════════════════════════════════════
+                    🎯 TESTING EDGE CASES
+═══════════════════════════════════════════════════════════════════════════════
+
+"Turn on the short lamp and dim the tall lamp to 40%"
+"What's the temperature, humidity, and motion status?"
+"If motion is detected, what happens?"
+"Show me all my automations"
+"Delete all automations except the motion one"
+"What can you control?"
+"List all available devices"
+"How many sensors do I have?"
+"Which lights are currently on?"
+"What's consuming power right now?"
+"Give me a full system report"
+"What automations are currently active?"
+"Can you make the lights pulse?"
+"Set short lamp to 100% and tall lamp to 0%"
+"Invert the current light states"
+"What's the temperature in Celsius?"
+"How long since last motion?"
+"Is bot1 responding?"
+"Test all systems"
+"Run a connectivity check"
+
+═══════════════════════════════════════════════════════════════════════════════
+                         END OF COMMAND LIST
+                    "Cairo, you there?" - Always ready!
+═══════════════════════════════════════════════════════════════════════════════

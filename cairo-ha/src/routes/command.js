@@ -41,10 +41,116 @@ router.post('/', async (req, res) => {
     } else if (lowerText.includes('motion') && !act.intent?.includes('MOTION')) {
       console.log('OVERRIDE: Detected motion query, forcing GET_MOTION');
       act = { intent: 'GET_MOTION' };
+    } else if (lowerText.includes('mood') && lowerText.includes('read')) {
+      // Reading mode - bright lights
+      console.log('OVERRIDE: Converting "reading mood" to 70% brightness');
+      act = { 
+        intent: 'LIGHT_SET_BRIGHTNESS', 
+        entity_ids: ['light.short_lamp', 'light.tall_lamp'],
+        brightness_pct: 70 
+      };
+    } else if (lowerText.includes('movie')) {
+      // Movie mode - dim lights
+      console.log('OVERRIDE: Converting "movie mode" to 20% brightness');
+      act = { 
+        intent: 'LIGHT_SET_BRIGHTNESS', 
+        entity_ids: ['light.short_lamp', 'light.tall_lamp'],
+        brightness_pct: 20 
+      };
+    } else if (lowerText.includes('bedtime') || (lowerText.includes('prepare') && lowerText.includes('bed'))) {
+      // Bedtime - lights off
+      console.log('OVERRIDE: Converting "bedtime" to lights off');
+      act = { 
+        intent: 'LIGHT_OFF', 
+        entity_ids: ['light.short_lamp', 'light.tall_lamp']
+      };
+    } else if (lowerText.includes('wake') && (lowerText.includes('house') || lowerText.includes('up'))) {
+      // Wake up - everything on
+      console.log('OVERRIDE: Converting "wake up" to lights full brightness');
+      act = { 
+        intent: 'LIGHT_SET_BRIGHTNESS', 
+        entity_ids: ['light.short_lamp', 'light.tall_lamp'],
+        brightness_pct: 100 
+      };
     }
 
-    if (act.intent === 'EXPLAIN_UNSUPPORTED') {
-      return res.status(400).json({ error: 'unsupported', act });
+    // Handle complex scenarios by converting them to actionable intents
+    if (act.intent === 'EXPLAIN_UNSUPPORTED' || !act.intent) {
+      console.log('[COMMAND] Handling complex scenario:', text);
+      
+      const lowerCmd = text.toLowerCase();
+      
+      // Convert complex scenarios to specific actions
+      if (lowerCmd.includes('mood') && lowerCmd.includes('read')) {
+        // Reading mode - bright lights
+        console.log('[COMMAND] Converting "reading mood" to 70% brightness');
+        act = { 
+          intent: 'LIGHT_SET_BRIGHTNESS', 
+          entity_ids: ['light.short_lamp', 'light.tall_lamp'],
+          brightness_pct: 70 
+        };
+      } else if (lowerCmd.includes('movie') || lowerCmd.includes('film')) {
+        // Movie mode - dim lights
+        console.log('[COMMAND] Converting "movie mode" to 20% brightness');
+        act = { 
+          intent: 'LIGHT_SET_BRIGHTNESS', 
+          entity_ids: ['light.short_lamp', 'light.tall_lamp'],
+          brightness_pct: 20 
+        };
+      } else if (lowerCmd.includes('bedtime') || lowerCmd.includes('sleep')) {
+        // Bedtime - lights off or very dim
+        console.log('[COMMAND] Converting "bedtime" to lights off');
+        act = { 
+          intent: 'LIGHT_OFF', 
+          entity_ids: ['light.short_lamp', 'light.tall_lamp']
+        };
+      } else if (lowerCmd.includes('wake') && lowerCmd.includes('house')) {
+        // Wake up - everything on
+        console.log('[COMMAND] Converting "wake up house" to lights on full');
+        act = { 
+          intent: 'LIGHT_SET_BRIGHTNESS', 
+          entity_ids: ['light.short_lamp', 'light.tall_lamp'],
+          brightness_pct: 100 
+        };
+      } else if (lowerCmd.includes('everything off') || lowerCmd.includes('all off')) {
+        // Everything off
+        console.log('[COMMAND] Converting "everything off" to lights off');
+        act = { 
+          intent: 'LIGHT_OFF', 
+          entity_ids: ['light.short_lamp', 'light.tall_lamp']
+        };
+      } else {
+        // For truly ambiguous commands, provide suggestions
+        console.log('[COMMAND] Unclear intent, providing suggestions for:', text);
+        
+        const suggestions = [];
+        
+        // Check for partial matches to provide better suggestions
+        if (lowerCmd.includes('switch') || lowerCmd.includes('bot')) {
+          suggestions.push('"Turn on bot1"', '"Turn off the switch"', '"Toggle bot1"');
+        }
+        if (lowerCmd.includes('toggle') && !lowerCmd.includes('lamp')) {
+          suggestions.push('"Toggle the tall lamp"', '"Toggle the short lamp"', '"Toggle bot1"');
+        }
+        
+        // If no specific suggestions, provide general help
+        if (suggestions.length === 0) {
+          suggestions.push(
+            '"Turn on the lights"',
+            '"What\'s the temperature?"',
+            '"Check motion sensor"',
+            '"List my automations"'
+          );
+        }
+        
+        return res.json({
+          act: { intent: 'CLARIFICATION_NEEDED', original_text: text },
+          clarification: true,
+          message: `I'm not quite sure what you mean by "${text}". Did you mean one of these?`,
+          suggestions,
+          help: 'Try rephrasing your command or choose from the suggestions above.'
+        });
+      }
     }
 
     if (!ALLOWED_INTENTS.has(act.intent)) {
@@ -231,7 +337,19 @@ router.post('/', async (req, res) => {
         });
       }
       default:
-        return res.status(400).json({ error: 'unhandled intent', act });
+        // For any unhandled intent, provide clarification
+        console.log('[COMMAND] Unhandled intent:', act.intent);
+        return res.json({
+          act: { intent: 'CLARIFICATION_NEEDED', original_intent: act.intent },
+          clarification: true,
+          message: `I don't know how to handle "${act.intent}" yet.`,
+          suggestions: [
+            '"Turn on the lights"',
+            '"What\'s the temperature?"',
+            '"List my automations"'
+          ],
+          help: 'Try one of the suggestions above or rephrase your request.'
+        });
     }
 
     return res.json({ act, result });

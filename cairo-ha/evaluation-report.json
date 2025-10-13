@@ -1,0 +1,74 @@
+{
+  "timestamp": "2025-10-13T00:34:52.030Z",
+  "summary": {
+    "total": 45,
+    "successful": 43,
+    "failed": 2,
+    "errors": 0,
+    "successRate": "95.6%",
+    "avgResponseTime": "1978ms"
+  },
+  "byCategory": {
+    "ENVIRONMENTAL_STATUS": {
+      "total": 6,
+      "successful": 6,
+      "failed": 0,
+      "errors": 0
+    },
+    "LIGHTING_CONTROL": {
+      "total": 8,
+      "successful": 6,
+      "failed": 2,
+      "errors": 0
+    },
+    "SENSOR_QUERIES": {
+      "total": 6,
+      "successful": 6,
+      "failed": 0,
+      "errors": 0
+    },
+    "SWITCH_CONTROL": {
+      "total": 5,
+      "successful": 5,
+      "failed": 0,
+      "errors": 0
+    },
+    "DEVICE_DISCOVERY": {
+      "total": 5,
+      "successful": 5,
+      "failed": 0,
+      "errors": 0
+    },
+    "AUTOMATIONS": {
+      "total": 5,
+      "successful": 5,
+      "failed": 0,
+      "errors": 0
+    },
+    "CONVERSATIONAL": {
+      "total": 5,
+      "successful": 5,
+      "failed": 0,
+      "errors": 0
+    },
+    "COMPLEX_SCENARIOS": {
+      "total": 5,
+      "successful": 5,
+      "failed": 0,
+      "errors": 0
+    }
+  },
+  "failedCommands": [
+    {
+      "command": "Turn on the lights",
+      "category": "LIGHTING_CONTROL",
+      "reason": "Invalid response content"
+    },
+    {
+      "command": "Turn on just the short lamp",
+      "category": "LIGHTING_CONTROL",
+      "reason": "Invalid response content"
+    }
+  ],
+  "errorCommands": []
+}

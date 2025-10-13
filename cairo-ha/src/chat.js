@@ -43,12 +43,19 @@ CRITICAL: Response format rules:
    - "delete all automations" → First GET count, then delete appropriately
    - "clear/remove all but X" → Use /automations/delete with keep_only parameter
    - Any sensor/device query → Use /command endpoint
+   - "movie mode" / "film mode" → Use /command endpoint with "Movie mode please"
+   - "reading mode" / "mood for reading" → Use /command endpoint with "Set the mood for reading"
+   - "bedtime" / "prepare for sleep" → Use /command endpoint with "Prepare for bedtime"
+   - "wake up the house" / "morning mode" → Use /command endpoint with "Wake up the house"
+   - "everything off" / "all off" → Use /command endpoint with "Everything off"
 
 CRITICAL EXECUTION RULES:
 - You can only execute ONE action per response
+- ALWAYS pass the user's ORIGINAL text to /command endpoint - do NOT modify or paraphrase it
 - If responding to "what should I wear" - MUST return temperature check action JSON
 - If you write "let me check" anywhere - MUST be accompanied by action JSON
 - Never respond with just conversational text when data is needed
+- For commands like "movie mode", "reading mode", etc - pass the EXACT user text to /command
 
 Use the "response" field for immediate acknowledgment
 Use the "followup" field for what to say after getting the result
@@ -83,6 +90,13 @@ Available endpoints:
 - DELETE /automations/delete {"alias": "..."} - Delete an automation by name
 - DELETE /automations/delete {"keep_only": "switch"} - Delete all except automations containing "switch" in name
 - DELETE /automations/delete {"delete_all": true} - Delete ALL automations
+
+THE USER'S ORIGINAL TEXT IS: "${text}"
+
+CRITICAL RULE FOR /command ENDPOINT:
+When calling /command, the body.text field MUST be EXACTLY: "${text}"
+DO NOT change it to "activate movie mode" or "turn off lights" or any other variation.
+The /command endpoint expects the EXACT user input to work correctly.
 
 Examples with personality:
 User: "turn on the lights"
@@ -121,12 +135,29 @@ Return: {"action": {"endpoint": "/automations/apply", "method": "POST", "body": 
 User: "list automations" or "show my automations" 
 Return: {"action": {"endpoint": "/automations", "method": "GET", "body": {}}, "response": "Let me show you your automations...", "followup": "#AUTOMATION_LIST#"}
 
+User: "what sensors do I have" or "list sensors" or "what devices" or "what can you control"
+Return: {"action": {"endpoint": "/capabilities", "method": "GET", "body": {}}, "response": "Let me check what devices are available...", "followup": "#DEVICE_LIST#"}
+
 User: "how are you?"
 Return: I'm doing great! Ready to help with anything you need - lights, temperature, automations, you name it.
 
 User: "what should I wear?" or "is it hot/cold?" or "what to wear" or clothing questions
 CRITICAL: MUST RETURN ACTION JSON, NOT JUST TEXT!
 Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "what's the temperature"}}, "response": "Let me check the temperature...", "followup": "It's X degrees - [clothing suggestion]"}
+
+User: "Movie mode please"
+Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "${text}"}}, "response": "Setting the scene for movie time...", "followup": "Perfect mood lighting at 20% - enjoy your movie!"}
+
+User: "Set the mood for reading"
+Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "${text}"}}, "response": "Let's brighten things up for some reading...", "followup": "Nice and bright at 70%!"}
+
+User: "Prepare for bedtime"
+Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "${text}"}}, "response": "Let's get things cozy for bedtime...", "followup": "All lights are off. Sweet dreams!"}
+
+User: "Wake up the house"
+Return: {"action": {"endpoint": "/command", "method": "POST", "body": {"text": "${text}"}}, "response": "Let's get everything up and running...", "followup": "The house is awake! All lights at full brightness."}
+
+REMEMBER: "${text}" is the user's EXACT input - use it verbatim in the body.text field!
 
 WRONG: "Let me check the temperature for you..." (just text = USER STUCK WAITING)
 RIGHT: The JSON above that actually executes the check
@@ -152,6 +183,12 @@ CRITICAL REMINDERS:
   });
 
   const msg = rsp.choices[0].message.content.trim();
+  
+  // Debug logging - show what GPT-4 returned
+  if (process.env.DEBUG === 'true') {
+    console.log('[CHAT DEBUG] User said:', text);
+    console.log('[CHAT DEBUG] GPT-4 returned:', msg.substring(0, 200) + (msg.length > 200 ? '...' : ''));
+  }
 
   // Try to parse possible action
   let parsed;
@@ -473,6 +510,29 @@ CRITICAL REMINDERS:
         } else {
           contextualReply = `All set! The automation has been deleted. You have ${remaining} automation${remaining !== 1 ? 's' : ''} still running. Need help with anything else?`;
         }
+      } else if (result?.clarification && result?.suggestions) {
+        // Handle clarification response from command endpoint
+        contextualReply = result.message || `I'm not quite sure what you mean. `;
+        contextualReply += `\n\nDid you mean one of these?\n`;
+        result.suggestions.forEach((suggestion, idx) => {
+          contextualReply += `${idx + 1}. ${suggestion}\n`;
+        });
+        contextualReply += `\n${result.help || 'Try rephrasing your command or choose from the suggestions above.'}`;
+      } else if (result?.capabilities) {
+        // Device/sensor listing
+        const caps = result.capabilities;
+        const lights = caps.light?.count || 0;
+        const switches = caps.switch?.count || 0;
+        const sensors = caps.sensor?.count || 0;
+        const binary = caps.binary_sensor?.count || 0;
+        
+        contextualReply = `Here's what I can control:\n\n`;
+        if (lights > 0) contextualReply += `• ${lights} light${lights !== 1 ? 's' : ''}\n`;
+        if (switches > 0) contextualReply += `• ${switches} switch${switches !== 1 ? 'es' : ''}\n`;
+        if (sensors > 0) contextualReply += `• ${sensors} sensor${sensors !== 1 ? 's' : ''} (temperature, humidity)\n`;
+        if (binary > 0) contextualReply += `• ${binary} binary sensor${binary !== 1 ? 's' : ''} (motion)\n`;
+        
+        contextualReply += `\nNeed me to check any of these or control something?`;
       } else if (result?.state) {
         // Generic state query
         contextualReply = `The current state is: ${result.state}`;
