@@ -99,6 +99,43 @@ router.post('/', async (req, res) => {
         entity_ids: ['light.short_lamp', 'light.tall_lamp'],
         brightness_pct: 100 
       };
+    } else if ((lowerText.includes('brightness') || lowerText.includes('bright') || lowerText.includes('dim')) && 
+               (lowerText.includes('up') || lowerText.includes('increase') || lowerText.includes('higher') || 
+                lowerText.includes('more') || lowerText.includes('raise'))) {
+      // Increase brightness
+      console.log('[MOCK] OVERRIDE: Detected brightness increase request');
+      // Extract percentage if provided
+      const percentMatch = lowerText.match(/(\d+)\s*%?/);
+      const brightness = percentMatch ? parseInt(percentMatch[1]) : 80; // Default to 80% if not specified
+      act = { 
+        intent: 'LIGHT_SET_BRIGHTNESS', 
+        entity_ids: ['light.short_lamp', 'light.tall_lamp'],
+        brightness_pct: Math.min(100, brightness)
+      };
+    } else if ((lowerText.includes('brightness') || lowerText.includes('bright') || lowerText.includes('dim')) && 
+               (lowerText.includes('down') || lowerText.includes('decrease') || lowerText.includes('lower') || 
+                lowerText.includes('less') || lowerText.includes('reduce'))) {
+      // Decrease brightness
+      console.log('[MOCK] OVERRIDE: Detected brightness decrease request');
+      const percentMatch = lowerText.match(/(\d+)\s*%?/);
+      const brightness = percentMatch ? parseInt(percentMatch[1]) : 30; // Default to 30% if not specified
+      act = { 
+        intent: 'LIGHT_SET_BRIGHTNESS', 
+        entity_ids: ['light.short_lamp', 'light.tall_lamp'],
+        brightness_pct: Math.max(10, brightness)
+      };
+    } else if ((lowerText.includes('set') || lowerText.includes('change')) && 
+               (lowerText.includes('brightness') || lowerText.includes('lights')) && 
+               lowerText.match(/\d+/)) {
+      // Set specific brightness
+      const percentMatch = lowerText.match(/(\d+)\s*%?/);
+      const brightness = percentMatch ? parseInt(percentMatch[1]) : 50;
+      console.log(`[MOCK] OVERRIDE: Setting brightness to ${brightness}%`);
+      act = { 
+        intent: 'LIGHT_SET_BRIGHTNESS', 
+        entity_ids: ['light.short_lamp', 'light.tall_lamp'],
+        brightness_pct: Math.min(100, Math.max(0, brightness))
+      };
     }
 
     // Handle greetings and simple responses first
@@ -169,27 +206,61 @@ router.post('/', async (req, res) => {
           entity_ids: ['light.short_lamp', 'light.tall_lamp']
         };
       } else {
-        // For truly ambiguous commands, provide suggestions
+        // For truly ambiguous commands, provide SMART context-aware suggestions
         console.log('[MOCK] Unclear intent, providing suggestions for:', text);
         
         const suggestions = [];
         
-        // Check for partial matches to provide better suggestions
-        if (lowerCmd.includes('switch') || lowerCmd.includes('bot')) {
-          suggestions.push('"Turn on bot1"', '"Turn off the switch"', '"Toggle bot1"');
-        }
-        if (lowerCmd.includes('toggle') && !lowerCmd.includes('lamp')) {
-          suggestions.push('"Toggle the tall lamp"', '"Toggle the short lamp"', '"Toggle bot1"');
-        }
-        
-        // If no specific suggestions, provide general help
-        if (suggestions.length === 0) {
+        // Analyze what the user might be trying to do
+        if (lowerCmd.includes('bright') || lowerCmd.includes('dim') || lowerCmd.includes('light')) {
+          // They're talking about lights/brightness
           suggestions.push(
-            '"Turn on the lights"',
-            '"What\'s the temperature?"',
-            '"Check motion sensor"',
-            '"List my automations"'
+            '"Set lights to 50%"',
+            '"Increase brightness to 80%"', 
+            '"Dim the lights"',
+            '"Turn lights up"'
           );
+        } else if (lowerCmd.includes('switch') || lowerCmd.includes('bot')) {
+          suggestions.push('"Turn on bot1"', '"Turn off the switch"', '"Toggle bot1"');
+        } else if (lowerCmd.includes('toggle')) {
+          suggestions.push('"Toggle the tall lamp"', '"Toggle the short lamp"', '"Toggle bot1"');
+        } else if (lowerCmd.includes('temp') || lowerCmd.includes('humid') || lowerCmd.includes('climate')) {
+          suggestions.push(
+            '"What\'s the temperature?"',
+            '"Check humidity"',
+            '"What\'s the temperature and humidity?"'
+          );
+        } else if (lowerCmd.includes('motion') || lowerCmd.includes('sensor')) {
+          suggestions.push(
+            '"Check motion sensor"',
+            '"Is there motion?"',
+            '"What sensors do I have?"'
+          );
+        } else if (lowerCmd.includes('automat') || lowerCmd.includes('rule')) {
+          suggestions.push(
+            '"List my automations"',
+            '"Show automation rules"',
+            '"What automations are active?"'
+          );
+        } else {
+          // Generic suggestions based on common patterns
+          if (text.split(' ').length <= 2) {
+            // Short command - might be missing context
+            suggestions.push(
+              '"Turn on the lights"',
+              '"Set brightness to 70%"',
+              '"Movie mode"',
+              '"What\'s the temperature?"'
+            );
+          } else {
+            // Longer command - try to be more specific
+            suggestions.push(
+              '"Turn on all lights"',
+              '"Set living room to 50%"',
+              '"Check all sensors"',
+              '"List my devices"'
+            );
+          }
         }
         
         return res.json({
