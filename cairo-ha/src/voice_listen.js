@@ -15,15 +15,10 @@ async function listenOnce() {
   console.log("🎙 Listening for 5 seconds...");
   const file = "/tmp/cairo_voice.wav";
 
-  // Use device from env or default
-  const audioDevice = process.env.AUDIO_DEVICE || "default";
-  console.log("📡 Using audio device:", audioDevice);
-  
   const rec = record.record({
     sampleRate: 16000,
     channels: 1,
-    device: audioDevice,
-    verbose: process.env.DEBUG === "true"
+    device: "default", // PulseAudio default now that you've looped
   });
 
   const stream = rec.stream().pipe(fs.createWriteStream(file));
