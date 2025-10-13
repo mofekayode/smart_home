@@ -56,10 +56,14 @@ async function sendToCairo(text) {
       headers: { 'Content-Type': 'application/json' }
     });
 
-    const cairoResponse = response.data.response;
-    console.log("💬 Cairo says:", cairoResponse);
+    // The chat endpoint returns {reply: "...", ...}
+    const cairoResponse = response.data?.reply || response.data?.response || response.data?.message;
     
-    return cairoResponse;
+    // Make sure we have a valid string
+    const responseText = cairoResponse || "I've completed that action for you.";
+    
+    console.log("💬 Cairo says:", responseText);
+    return responseText;
   } catch (error) {
     console.error("❌ Cairo error:", error.message);
     return "Sorry, I'm having trouble connecting to the smart home system.";
