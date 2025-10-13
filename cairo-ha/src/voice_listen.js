@@ -2,6 +2,12 @@ import 'dotenv/config';
 import fs from "fs";
 import { OpenAI } from "openai";
 import record from "node-record-lpcm16";
+import { File } from "node:buffer";
+
+// Fix for Node.js < 20
+if (!globalThis.File) {
+  globalThis.File = File;
+}
 
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
