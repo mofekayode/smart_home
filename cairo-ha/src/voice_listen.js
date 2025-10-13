@@ -15,8 +15,8 @@ async function listenOnce() {
   console.log("🎙 Listening for 5 seconds...");
   const file = "/tmp/cairo_voice.wav";
 
-  // Use device from env or try pulse for Bluetooth compatibility
-  const audioDevice = process.env.AUDIO_DEVICE || "pulse";
+  // Use device from env or default
+  const audioDevice = process.env.AUDIO_DEVICE || "default";
   console.log("📡 Using audio device:", audioDevice);
   
   const rec = record.record({
