@@ -14,19 +14,25 @@ if (!globalThis.File) {
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 const CAIRO_URL = process.env.CAIRO_URL || "http://localhost:7860";
 
-// Listen for voice input
-async function listen(duration = 5000) {
-  console.log(`🎙  Listening for ${duration/1000} seconds...`);
+// Listen for voice input with adaptive duration
+async function listen(duration = 3000, mode = "normal") {
+  // Use shorter duration for conversation mode, longer for wake word detection
+  const listenDuration = mode === "conversation" ? 2500 : 
+                         mode === "follow-up" ? 3000 : 
+                         duration;
+  
+  console.log(`🎙  Listening...`);
   const file = "/tmp/cairo_voice.wav";
 
   const rec = record.record({
     sampleRate: 16000,
     channels: 1,
     device: "default",
+    threshold: 0.5, // Voice activity threshold
   });
 
   const stream = rec.stream().pipe(fs.createWriteStream(file));
-  await new Promise((r) => setTimeout(r, duration));
+  await new Promise((r) => setTimeout(r, listenDuration));
   rec.stop();
 
   // Transcribe with Whisper
@@ -34,9 +40,12 @@ async function listen(duration = 5000) {
     const rsp = await openai.audio.transcriptions.create({
       file: fs.createReadStream(file),
       model: "whisper-1",
+      prompt: "Cairo, hey Cairo, okay Cairo", // Help Whisper recognize wake words
     });
     
-    console.log("📝 You said:", rsp.text);
+    if (rsp.text && rsp.text.trim()) {
+      console.log("📝 You said:", rsp.text);
+    }
     return rsp.text;
   } catch (error) {
     console.error("❌ Transcription error:", error.message);
@@ -77,6 +86,61 @@ function hasWakeWord(text) {
   return lowerText.includes("cairo") || lowerText.includes("hey cairo") || lowerText.includes("okay cairo");
 }
 
+// Filter out background noise and false transcriptions
+function isValidTranscription(text) {
+  if (!text || text.trim().length === 0) return false;
+  
+  // Filter out very short transcriptions (likely noise)
+  if (text.trim().length < 3) return false;
+  
+  // Filter out emoji-only transcriptions
+  const emojiRegex = /^[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}\u{1F100}-\u{1F1FF}\s]+$/u;
+  if (emojiRegex.test(text)) {
+    console.log("🚫 Filtered out emoji-only transcription");
+    return false;
+  }
+  
+  // Filter out single repeated words (like "and and and" or "Okay. Okay. Okay.")
+  const words = text.toLowerCase().replace(/[.,!?]/g, '').split(/\s+/);
+  const uniqueWords = new Set(words);
+  if (words.length > 2 && uniqueWords.size === 1) {
+    console.log("🚫 Filtered out repeated word transcription");
+    return false;
+  }
+  
+  // Filter out common video/media phrases that are likely background
+  const backgroundPhrases = [
+    /^share this video/i,
+    /^thank you (so much )?for watching/i,
+    /^subscribe to/i,
+    /^like and subscribe/i,
+    /^don't forget to/i,
+    /^click the bell/i,
+    /^follow me on/i,
+    /^check out my/i,
+    /^link in the description/i,
+    /^comment below/i
+  ];
+  
+  for (const phrase of backgroundPhrases) {
+    if (phrase.test(text)) {
+      console.log("🚫 Filtered out background media phrase");
+      return false;
+    }
+  }
+  
+  // Filter out non-English characters (except common punctuation)
+  // This helps filter out foreign language from videos
+  const nonEnglishRegex = /[^\x00-\x7F\u00C0-\u00FF]/;
+  const cleanText = text.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/gu, '');
+  if (nonEnglishRegex.test(cleanText) && !hasWakeWord(text)) {
+    console.log("🚫 Filtered out non-English transcription");
+    return false;
+  }
+  
+  return true;
+}
+
 // Track if we're in conversation mode
 let conversationMode = false;
 let conversationTimer = null;
@@ -84,10 +148,15 @@ let conversationTimer = null;
 // Process a single voice command
 async function processVoiceCommand(requireWakeWord = false) {
   try {
-    // Listen for voice input
-    const text = await listen();
-    if (!text) {
-      await speak("Sorry, I didn't catch that.");
+    // Determine listening mode
+    const listenMode = conversationMode ? "conversation" : "normal";
+    
+    // Listen for voice input with appropriate duration
+    const text = await listen(3000, listenMode);
+    
+    // Validate transcription (filter out noise/background)
+    if (!isValidTranscription(text)) {
+      // Silently ignore invalid transcriptions (no "Sorry, I didn't catch that")
       return;
     }
 
@@ -114,12 +183,12 @@ async function processVoiceCommand(requireWakeWord = false) {
         .replace(/cairo,?\s*/i, "")
         .trim();
       
-      // If only wake word was said, acknowledge
+      // If only wake word was said, acknowledge with faster response
       if (!command) {
-        await speak("Yes, Mofe? How can I help?");
-        // Listen for actual command
-        const followUp = await listen();
-        if (followUp) {
+        await speak("Yes, Mofe?");
+        // Listen for actual command with shorter duration
+        const followUp = await listen(3000, "follow-up");
+        if (followUp && isValidTranscription(followUp)) {
           command = followUp;
         } else {
           return;
@@ -160,8 +229,8 @@ async function continuousMode() {
   // Keep listening
   while (true) {
     await processVoiceCommand(true);
-    // Small pause between listening sessions
-    await new Promise(r => setTimeout(r, 500));
+    // Very small pause between listening sessions for responsiveness
+    await new Promise(r => setTimeout(r, 100));
   }
 }
 
