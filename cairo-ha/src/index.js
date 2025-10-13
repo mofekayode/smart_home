@@ -19,7 +19,7 @@ import mockAutomationsRouter from './routes/mock/automations.js';
 import mockCapabilitiesRouter from './routes/mock/capabilities.js';
 
 // TEST MODE - Set to true to use mock endpoints instead of real Home Assistant
-const TEST_MODE = process.env.TEST_MODE === 'true' || true;
+const TEST_MODE = process.env.TEST_MODE === 'true' || false;
 
 const app = express();
 app.use(express.json());
