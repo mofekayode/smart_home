@@ -18,7 +18,7 @@ async function listenOnce() {
   const rec = record.record({
     sampleRate: 16000,
     channels: 1,
-    device: "default", // PulseAudio default now that you've looped
+    device: "default",
   });
 
   const stream = rec.stream().pipe(fs.createWriteStream(file));
