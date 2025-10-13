@@ -91,7 +91,11 @@ function isValidTranscription(text) {
   if (!text || text.trim().length === 0) return false;
   
   // Filter out very short transcriptions (likely noise)
-  if (text.trim().length < 3) return false;
+  // Unless it's a valid short response like "yes", "no", "ok"
+  const validShortResponses = ["yes", "no", "ok", "okay", "hey", "hi"];
+  if (text.trim().length < 3 && !validShortResponses.includes(text.trim().toLowerCase())) {
+    return false;
+  }
   
   // Filter out emoji-only transcriptions
   const emojiRegex = /^[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{1F000}-\u{1F02F}\u{1F0A0}-\u{1F0FF}\u{1F100}-\u{1F1FF}\s]+$/u;
@@ -202,14 +206,14 @@ async function processVoiceCommand(requireWakeWord = false) {
     // Speak the response
     await speak(response);
     
-    // Enable conversation mode for 10 seconds after Cairo speaks
-    // This allows follow-up without wake word
+    // Enable conversation mode for 20 seconds after Cairo speaks
+    // This allows natural follow-up conversation without wake word
     conversationMode = true;
     clearTimeout(conversationTimer);
     conversationTimer = setTimeout(() => {
       conversationMode = false;
       console.log("💤 Conversation mode ended, wake word required again");
-    }, 10000);
+    }, 20000); // Extended from 10s to 20s for natural conversation
     
   } catch (error) {
     console.error("❌ Error in voice processing:", error);
