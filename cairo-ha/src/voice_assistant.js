@@ -77,6 +77,10 @@ function hasWakeWord(text) {
   return lowerText.includes("cairo") || lowerText.includes("hey cairo") || lowerText.includes("okay cairo");
 }
 
+// Track if we're in conversation mode
+let conversationMode = false;
+let conversationTimer = null;
+
 // Process a single voice command
 async function processVoiceCommand(requireWakeWord = false) {
   try {
@@ -87,8 +91,16 @@ async function processVoiceCommand(requireWakeWord = false) {
       return;
     }
 
+    // In conversation mode, we don't need wake word for 10 seconds after Cairo speaks
+    const needsWakeWord = requireWakeWord && !conversationMode;
+    
+    // Show conversation mode status
+    if (conversationMode) {
+      console.log("💬 Conversation mode active - no wake word needed");
+    }
+    
     // Check for wake word if required
-    if (requireWakeWord && !hasWakeWord(text)) {
+    if (needsWakeWord && !hasWakeWord(text)) {
       console.log("⏭️  No wake word detected, ignoring...");
       return;
     }
@@ -120,6 +132,15 @@ async function processVoiceCommand(requireWakeWord = false) {
     
     // Speak the response
     await speak(response);
+    
+    // Enable conversation mode for 10 seconds after Cairo speaks
+    // This allows follow-up without wake word
+    conversationMode = true;
+    clearTimeout(conversationTimer);
+    conversationTimer = setTimeout(() => {
+      conversationMode = false;
+      console.log("💤 Conversation mode ended, wake word required again");
+    }, 10000);
     
   } catch (error) {
     console.error("❌ Error in voice processing:", error);
