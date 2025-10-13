@@ -51,7 +51,7 @@ async function sendToCairo(text) {
     
     // Send to Cairo's chat endpoint
     const response = await axios.post(`${CAIRO_URL}/chat`, {
-      message: text
+      text: text  // Changed from 'message' to 'text'
     }, {
       headers: { 'Content-Type': 'application/json' }
     });

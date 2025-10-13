@@ -207,7 +207,7 @@ CRITICAL REMINDERS:
     temperature: 0.4
   });
 
-  const msg = rsp.choices[0].message.content.trim();
+  const msg = rsp.choices[0].message.content?.trim() || "I'm sorry, I didn't understand that.";
   
   // Debug logging - show what GPT-4 returned
   if (process.env.DEBUG === 'true') {
