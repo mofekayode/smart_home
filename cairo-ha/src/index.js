@@ -12,6 +12,7 @@ import introspectionRouter from './routes/introspection.js';
 import capabilitiesRouter from './routes/capabilities.js';
 import helpRouter from './routes/help.js';
 import healthRouter from './routes/health.js';
+import vapiRouter from './routes/vapi.js';
 
 // Mock routes for testing
 import mockCommandRouter from './routes/mock/command.js';
@@ -24,8 +25,9 @@ const TEST_MODE = process.env.TEST_MODE === 'true' || false;
 const app = express();
 app.use(express.json());
 
-// Always use real chat router
+// Always use real chat router and Vapi integration
 app.use('/chat', chatRouter);
+app.use('/vapi', vapiRouter);
 
 // Conditionally use mock or real routes based on TEST_MODE
 if (TEST_MODE) {

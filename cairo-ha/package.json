@@ -9,7 +9,9 @@
     "start": "node src/index.js",
     "voice": "node src/voice_cli.js",
     "voice:test": "node src/voice_speak.js",
-    "voice:debug": "node src/voice_debug.js"
+    "voice:debug": "node src/voice_debug.js",
+    "vapi:setup": "node src/vapi-setup.js",
+    "vapi:client": "node src/vapi-client.js"
   },
   "keywords": [],
   "author": "",

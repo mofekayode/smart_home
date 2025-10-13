@@ -1,0 +1,6 @@
+{
+  "assistantId": "dee1d449-e79b-4c2c-ab9d-0f097e2e1f35",
+  "publicKey": "b09bc51c-d693-40c9-96b7-15229f0c4595",
+  "webhookUrl": "http://localhost:7860/vapi/webhook",
+  "createdAt": "2025-10-13T16:12:40.680Z"
+}
