@@ -7,6 +7,9 @@ import { ALLOWED_INTENTS, ENTITY_RE } from '../constants.js';
 
 const router = Router();
 
+// Check if running in test mode (for mock data)
+const TEST_MODE = process.env.TEST_MODE === 'true';
+
 router.post('/intent/parse', async (req, res) => {
   const { text } = req.body || {};
   if (!text) return res.status(400).json({ error: 'text required' });
@@ -25,11 +28,15 @@ router.post('/', async (req, res) => {
     // Debug logging
     console.log('Parsed action:', JSON.stringify(act));
     
-    // OVERRIDE: Fix common temperature/humidity queries that NLP fails to parse
+    // OVERRIDE: Fix common queries that NLP fails to parse
     const lowerText = text.toLowerCase();
-    
-    // Check for combined temperature AND humidity query
-    if (lowerText.includes('temperature') && lowerText.includes('humidity')) {
+
+    // Check for brightness queries
+    if ((lowerText.includes('what') || lowerText.includes('check') || lowerText.includes('current')) &&
+        lowerText.includes('brightness')) {
+      console.log('OVERRIDE: Detected brightness query, forcing GET_BRIGHTNESS');
+      act = { intent: 'GET_BRIGHTNESS', entity_ids: ['light.short_lamp', 'light.tall_lamp'] };
+    } else if (lowerText.includes('temperature') && lowerText.includes('humidity')) {
       console.log('OVERRIDE: Detected combined climate query, forcing GET_CLIMATE');
       act = { intent: 'GET_CLIMATE' };
     } else if (lowerText.includes('temperature') && !act.intent?.includes('TEMP')) {
@@ -97,17 +104,24 @@ router.post('/', async (req, res) => {
         entity_ids: ['light.short_lamp', 'light.tall_lamp'],
         brightness_pct: Math.max(10, brightness)
       };
-    } else if ((lowerText.includes('set') || lowerText.includes('change')) && 
-               (lowerText.includes('brightness') || lowerText.includes('lights')) && 
-               lowerText.match(/\d+/)) {
-      // Set specific brightness
-      const percentMatch = lowerText.match(/(\d+)\s*%?/);
+    } else if (lowerText.match(/\d+/) && (lowerText.includes('brightness') || lowerText.includes('%') || lowerText.includes('percent'))) {
+      // ANY command with a number + brightness/percent -> use that EXACT number
+      const percentMatch = lowerText.match(/(\d+)\s*(?:%|percent)?/);
       const brightness = percentMatch ? parseInt(percentMatch[1]) : 50;
-      console.log(`OVERRIDE: Setting brightness to ${brightness}%`);
-      act = { 
-        intent: 'LIGHT_SET_BRIGHTNESS', 
+      console.log(`OVERRIDE: User said ${brightness}% - USING EXACT VALUE`);
+      act = {
+        intent: 'LIGHT_SET_BRIGHTNESS',
         entity_ids: ['light.short_lamp', 'light.tall_lamp'],
         brightness_pct: Math.min(100, Math.max(0, brightness))
+      };
+    } else if ((lowerText.includes('set') || lowerText.includes('change')) &&
+               (lowerText.includes('brightness') || lowerText.includes('lights'))) {
+      // Set brightness without number - default to 50%
+      console.log(`OVERRIDE: Setting brightness to default 50%`);
+      act = {
+        intent: 'LIGHT_SET_BRIGHTNESS',
+        entity_ids: ['light.short_lamp', 'light.tall_lamp'],
+        brightness_pct: 50
       };
     }
 
@@ -315,17 +329,29 @@ router.post('/', async (req, res) => {
           });
         } catch (error) {
           if (error.response?.status === 404) {
-            console.log(`Temperature sensor ${id} not found, using mock data`);
-            // Return mock data for testing when sensor doesn't exist
-            return res.json({
-              act, result: {
-                entity: id,
-                value: "72",
-                unit: "°F",
-                mock: true,
-                message: "Using mock data - sensor not found in Home Assistant"
-              }
-            });
+            // Only return mock data in TEST_MODE
+            if (TEST_MODE) {
+              console.log(`[TEST_MODE] Temperature sensor ${id} not found, using mock data`);
+              return res.json({
+                act, result: {
+                  entity: id,
+                  value: "72",
+                  unit: "°F",
+                  mock: true,
+                  message: "Using mock data - sensor not found in Home Assistant"
+                }
+              });
+            } else {
+              // In production, return proper error
+              console.error(`[PRODUCTION] Temperature sensor ${id} not found - returning error`);
+              return res.json({
+                act, result: {
+                  error: `Temperature sensor '${id}' not found`,
+                  suggestion: "Check if your temperature sensor is connected to Home Assistant",
+                  entity: id
+                }
+              });
+            }
           }
           throw error;
         }
@@ -345,17 +371,29 @@ router.post('/', async (req, res) => {
           });
         } catch (error) {
           if (error.response?.status === 404) {
-            console.log(`Humidity sensor ${id} not found, using mock data`);
-            // Return mock data for testing when sensor doesn't exist
-            return res.json({
-              act, result: {
-                entity: id,
-                value: "45",
-                unit: "%",
-                mock: true,
-                message: "Using mock data - sensor not found in Home Assistant"
-              }
-            });
+            // Only return mock data in TEST_MODE
+            if (TEST_MODE) {
+              console.log(`[TEST_MODE] Humidity sensor ${id} not found, using mock data`);
+              return res.json({
+                act, result: {
+                  entity: id,
+                  value: "45",
+                  unit: "%",
+                  mock: true,
+                  message: "Using mock data - sensor not found in Home Assistant"
+                }
+              });
+            } else {
+              // In production, return proper error
+              console.error(`[PRODUCTION] Humidity sensor ${id} not found - returning error`);
+              return res.json({
+                act, result: {
+                  error: `Humidity sensor '${id}' not found`,
+                  suggestion: "Check if your humidity sensor is connected to Home Assistant",
+                  entity: id
+                }
+              });
+            }
           }
           throw error;
         }
@@ -364,19 +402,19 @@ router.post('/', async (req, res) => {
         // Get both temperature and humidity in parallel
         const tempId = 'sensor.centralite_3310_g_temperature';
         const humidId = 'sensor.centralite_3310_g_humidity';
-        
+
         console.log(`GET_CLIMATE: Fetching both temperature and humidity`);
-        
+
         try {
           // Fetch both in parallel for speed
           const [tempResult, humidResult] = await Promise.allSettled([
             getState(tempId),
             getState(humidId)
           ]);
-          
+
           const response = { act };
           const results = {};
-          
+
           // Handle temperature result
           if (tempResult.status === 'fulfilled') {
             results.temperature = {
@@ -385,15 +423,27 @@ router.post('/', async (req, res) => {
               entity: tempId
             };
           } else {
-            results.temperature = {
-              value: "72",
-              unit: "°F",
-              mock: true,
-              error: "Sensor not found"
-            };
+            // Only return mock data in TEST_MODE
+            if (TEST_MODE) {
+              console.log(`[TEST_MODE] Temperature sensor failed, using mock data`);
+              results.temperature = {
+                value: "72",
+                unit: "°F",
+                mock: true,
+                error: "Sensor not found"
+              };
+            } else {
+              // In production, return error
+              console.error(`[PRODUCTION] Temperature sensor ${tempId} not found`);
+              results.temperature = {
+                error: `Temperature sensor '${tempId}' not found`,
+                suggestion: "Check if your temperature sensor is connected",
+                entity: tempId
+              };
+            }
           }
-          
-          // Handle humidity result  
+
+          // Handle humidity result
           if (humidResult.status === 'fulfilled') {
             results.humidity = {
               value: humidResult.value.state,
@@ -401,17 +451,29 @@ router.post('/', async (req, res) => {
               entity: humidId
             };
           } else {
-            results.humidity = {
-              value: "45",
-              unit: "%",
-              mock: true,
-              error: "Sensor not found"
-            };
+            // Only return mock data in TEST_MODE
+            if (TEST_MODE) {
+              console.log(`[TEST_MODE] Humidity sensor failed, using mock data`);
+              results.humidity = {
+                value: "45",
+                unit: "%",
+                mock: true,
+                error: "Sensor not found"
+              };
+            } else {
+              // In production, return error
+              console.error(`[PRODUCTION] Humidity sensor ${humidId} not found`);
+              results.humidity = {
+                error: `Humidity sensor '${humidId}' not found`,
+                suggestion: "Check if your humidity sensor is connected",
+                entity: humidId
+              };
+            }
           }
-          
+
           response.result = results;
           return res.json(response);
-          
+
         } catch (error) {
           console.error('GET_CLIMATE error:', error);
           return res.status(500).json({ error: error.message });
@@ -428,6 +490,32 @@ router.post('/', async (req, res) => {
             last_changed: s.last_changed
           }
         });
+      }
+      case 'GET_BRIGHTNESS': {
+        // Get brightness of specified lights
+        try {
+          const brightnessResults = [];
+          for (const entityId of targets) {
+            const state = await getState(entityId);
+            const brightness = state.attributes?.brightness || 0;
+            const brightness_pct = Math.round((brightness / 255) * 100);
+            brightnessResults.push({
+              entity: entityId,
+              brightness_pct: brightness_pct,
+              is_on: state.state === 'on'
+            });
+          }
+
+          return res.json({
+            act,
+            result: {
+              lights: brightnessResults
+            }
+          });
+        } catch (error) {
+          console.error('GET_BRIGHTNESS error:', error);
+          return res.status(500).json({ error: error.message });
+        }
       }
       default:
         // For any unhandled intent, provide clarification

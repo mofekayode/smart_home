@@ -1,17 +1,66 @@
 import { Router } from 'express';
 import { parseToAction } from '../../nlp.js';
+import { readFileSync } from 'fs';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const router = Router();
 
-// Mock device states
-const mockStates = {
-  'light.short_lamp': { state: 'off', brightness: 0 },
-  'light.tall_lamp': { state: 'off', brightness: 0 },
-  'switch.bot1': { state: 'off' },
-  'sensor.centralite_3310_g_temperature': { state: '73.4', unit: '°F' },
-  'sensor.centralite_3310_g_humidity': { state: '58', unit: '%' },
-  'binary_sensor.motion_sensor': { state: 'off', last_changed: new Date().toISOString() }
-};
+// Load captured real HA data, or fall back to hardcoded defaults
+let capturedData = null;
+try {
+  const dataPath = join(__dirname, 'ha-responses.json');
+  const fileContent = readFileSync(dataPath, 'utf-8');
+  capturedData = JSON.parse(fileContent);
+  console.log('[MOCK] Loaded real HA data from ha-responses.json');
+  console.log(`[MOCK]   Captured at: ${capturedData.timestamp}`);
+  console.log(`[MOCK]   ${Object.keys(capturedData.states).length} entity states available`);
+} catch (error) {
+  console.log('[MOCK] Could not load ha-responses.json, using hardcoded defaults');
+  console.log(`[MOCK]   Error: ${error.message}`);
+}
+
+// Initialize mock states from captured data or use defaults
+const mockStates = {};
+
+if (capturedData) {
+  // Use real captured data
+  Object.entries(capturedData.states).forEach(([entityId, state]) => {
+    if (entityId.startsWith('light.')) {
+      // Convert HA brightness (0-255) to percentage (0-100)
+      const brightness = state.attributes.brightness ? Math.round((state.attributes.brightness / 255) * 100) : 0;
+      mockStates[entityId] = {
+        state: state.state,
+        brightness: brightness
+      };
+    } else if (entityId.startsWith('sensor.')) {
+      mockStates[entityId] = {
+        state: state.state,
+        unit: state.attributes.unit_of_measurement || ''
+      };
+    } else if (entityId.startsWith('switch.')) {
+      mockStates[entityId] = {
+        state: state.state
+      };
+    } else if (entityId.startsWith('binary_sensor.')) {
+      mockStates[entityId] = {
+        state: state.state,
+        last_changed: state.last_changed
+      };
+    }
+  });
+} else {
+  // Fallback to hardcoded defaults
+  mockStates['light.short_lamp'] = { state: 'off', brightness: 0 };
+  mockStates['light.tall_lamp'] = { state: 'off', brightness: 0 };
+  mockStates['switch.bot1'] = { state: 'off' };
+  mockStates['sensor.centralite_3310_g_temperature'] = { state: '73.4', unit: '°F' };
+  mockStates['sensor.centralite_3310_g_humidity'] = { state: '58', unit: '%' };
+  mockStates['binary_sensor.motion_sensor'] = { state: 'off', last_changed: new Date().toISOString() };
+}
 
 // Mock catalog for NLP
 const mockCatalog = {

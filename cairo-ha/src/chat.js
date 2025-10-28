@@ -257,11 +257,18 @@ CRITICAL REMINDERS:
       
       // Add specific result interpretation
       if (result?.result?.error) {
-        // Handle sensor not found errors conversationally
-        if (result.result.error.includes('not found')) {
-          contextualReply = `Hmm, I can't find that sensor. Let me know if you need help setting it up, or try asking about a different device.`;
+        // Handle sensor errors gracefully and naturally
+        const error = result.result.error;
+        const suggestion = result.result.suggestion;
+
+        if (error.includes('Temperature sensor') && error.includes('not found')) {
+          contextualReply = `Hmm, I can't reach your temperature sensor right now. ${suggestion || 'It might be offline or disconnected from Home Assistant.'}`;
+        } else if (error.includes('Humidity sensor') && error.includes('not found')) {
+          contextualReply = `I'm having trouble reaching your humidity sensor. ${suggestion || 'It might be offline or disconnected from Home Assistant.'}`;
+        } else if (error.includes('not found')) {
+          contextualReply = `I can't find that sensor. ${suggestion || 'Check if it\'s connected to Home Assistant.'}`;
         } else {
-          contextualReply = `Oops, ran into a snag: ${result.result.error}. ${result.result.suggestion || 'Want me to try something else?'}`;
+          contextualReply = `Oops, ran into an issue: ${error}. ${suggestion || 'Want me to try something else?'}`;
         }
       } else if (result?.proposal) {
         // Handle automation suggestion results
@@ -348,35 +355,43 @@ CRITICAL REMINDERS:
         // Handle combined temperature and humidity response
         const temp = result.result.temperature;
         const humid = result.result.humidity;
-        
-        // Round temperature for more natural speech
-        const tempValue = Math.round(parseFloat(temp.value));
-        const humidValue = Math.round(parseFloat(humid.value));
-        
-        // Create natural, conversational response
-        const tempComment = tempValue < 65 ? "pretty chilly" : 
-                           tempValue < 72 ? "nice and cool" :
-                           tempValue < 78 ? "comfortable" :
-                           tempValue < 85 ? "getting warm" : "quite warm";
-        
-        const humidComment = humidValue < 30 ? "The air's pretty dry" :
-                            humidValue < 50 ? "Humidity feels just right" :
-                            humidValue < 65 ? "It's a bit humid" :
-                            "It's quite humid in here";
-        
-        contextualReply = `It's ${tempValue} degrees - ${tempComment}. ${humidComment} at ${humidValue}%.`;
-        
-        // Add proactive suggestions based on conditions
-        if (tempValue > 78) {
-          contextualReply += ` Want me to turn on a fan or adjust the AC?`;
-        } else if (tempValue < 68) {
-          contextualReply += ` Should I turn up the heat?`;
-        } else if (humidValue > 65) {
-          contextualReply += ` I could turn on a dehumidifier if you'd like.`;
-        } else if (humidValue < 30) {
-          contextualReply += ` Would you like me to turn on a humidifier?`;
+
+        // Check if either sensor has errors
+        if (temp?.error || humid?.error) {
+          const errors = [];
+          if (temp?.error) errors.push('temperature sensor');
+          if (humid?.error) errors.push('humidity sensor');
+          contextualReply = `I'm having trouble reaching your ${errors.join(' and ')}. They might be offline or disconnected from Home Assistant.`;
         } else {
-          contextualReply += ` Everything seems comfortable!`;
+          // Both sensors working - proceed normally
+          const tempValue = Math.round(parseFloat(temp.value));
+          const humidValue = Math.round(parseFloat(humid.value));
+
+          // Create natural, conversational response
+          const tempComment = tempValue < 65 ? "pretty chilly" :
+                             tempValue < 72 ? "nice and cool" :
+                             tempValue < 78 ? "comfortable" :
+                             tempValue < 85 ? "getting warm" : "quite warm";
+
+          const humidComment = humidValue < 30 ? "The air's pretty dry" :
+                              humidValue < 50 ? "Humidity feels just right" :
+                              humidValue < 65 ? "It's a bit humid" :
+                              "It's quite humid in here";
+
+          contextualReply = `It's ${tempValue} degrees - ${tempComment}. ${humidComment} at ${humidValue}%.`;
+
+          // Add proactive suggestions based on conditions
+          if (tempValue > 78) {
+            contextualReply += ` Want me to turn on a fan or adjust the AC?`;
+          } else if (tempValue < 68) {
+            contextualReply += ` Should I turn up the heat?`;
+          } else if (humidValue > 65) {
+            contextualReply += ` I could turn on a dehumidifier if you'd like.`;
+          } else if (humidValue < 30) {
+            contextualReply += ` Would you like me to turn on a humidifier?`;
+          } else {
+            contextualReply += ` Everything seems comfortable!`;
+          }
         }
       } else if (result?.act?.intent === 'GET_TEMPERATURE' && result?.result?.value) {
         const tempValue = Math.round(parseFloat(result.result.value));
@@ -506,6 +521,35 @@ CRITICAL REMINDERS:
           contextualReply = `Perfect ambient lighting at ${brightness}%.`;
         } else {
           contextualReply = `Nice and bright at ${brightness}%!`;
+        }
+      } else if (result?.act?.intent === 'GET_BRIGHTNESS') {
+        // Handle brightness query response
+        if (result?.result?.lights && Array.isArray(result.result.lights)) {
+          const lights = result.result.lights;
+          if (lights.length === 1) {
+            const light = lights[0];
+            if (!light.is_on) {
+              contextualReply = `That light is currently off.`;
+            } else {
+              contextualReply = `The brightness is at ${light.brightness_pct}%.`;
+            }
+          } else {
+            // Multiple lights
+            const onLights = lights.filter(l => l.is_on);
+            if (onLights.length === 0) {
+              contextualReply = `All lights are currently off.`;
+            } else {
+              const avgBrightness = Math.round(
+                onLights.reduce((sum, l) => sum + l.brightness_pct, 0) / onLights.length
+              );
+              contextualReply = `Your lights are at about ${avgBrightness}% brightness on average.`;
+              if (lights.some(l => !l.is_on)) {
+                contextualReply += ` (Some lights are off)`;
+              }
+            }
+          }
+        } else {
+          contextualReply = `I couldn't check the brightness. Want me to set it to something specific?`;
         }
       } else if (result?.act?.intent?.includes('SWITCH_ON')) {
         contextualReply = `Switch is on - all powered up!`;

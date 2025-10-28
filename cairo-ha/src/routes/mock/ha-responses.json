@@ -1,0 +1,1789 @@
+{
+  "timestamp": "2025-10-15T12:28:19.541Z",
+  "states": {
+    "light.short_lamp": {
+      "entity_id": "light.short_lamp",
+      "state": "on",
+      "attributes": {
+        "supported_color_modes": [
+          "brightness"
+        ],
+        "color_mode": "brightness",
+        "brightness": 103,
+        "friendly_name": "short lamp ",
+        "supported_features": 32
+      },
+      "last_changed": "2025-10-15T12:10:25.615239+00:00",
+      "last_reported": "2025-10-15T12:10:29.397290+00:00",
+      "last_updated": "2025-10-15T12:10:29.397290+00:00",
+      "context": {
+        "id": "01K7KWEP51P9GA39TXV1XGP708",
+        "parent_id": null,
+        "user_id": "a354881bd7bd4db986287fbe7f85d069"
+      }
+    },
+    "light.tall_lamp": {
+      "entity_id": "light.tall_lamp",
+      "state": "on",
+      "attributes": {
+        "supported_color_modes": [
+          "brightness"
+        ],
+        "color_mode": "brightness",
+        "brightness": 103,
+        "friendly_name": "Tall lamp ",
+        "supported_features": 32
+      },
+      "last_changed": "2025-10-15T12:10:25.766342+00:00",
+      "last_reported": "2025-10-15T12:10:29.485090+00:00",
+      "last_updated": "2025-10-15T12:10:29.485090+00:00",
+      "context": {
+        "id": "01K7KWEP51P9GA39TXV1XGP708",
+        "parent_id": null,
+        "user_id": "a354881bd7bd4db986287fbe7f85d069"
+      }
+    },
+    "switch.bot1": {
+      "entity_id": "switch.bot1",
+      "state": "on",
+      "attributes": {
+        "last_run_success": true,
+        "switch_mode": true,
+        "device_class": "switch",
+        "friendly_name": "Switch bot"
+      },
+      "last_changed": "2025-10-12T01:17:46.771859+00:00",
+      "last_reported": "2025-10-12T01:17:46.771859+00:00",
+      "last_updated": "2025-10-12T01:17:46.771859+00:00",
+      "context": {
+        "id": "01K7AZXGCKFFDWEM5PPYBCZ6ZK",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    "sensor.centralite_3310_g_temperature": {
+      "entity_id": "sensor.centralite_3310_g_temperature",
+      "state": "70.196",
+      "attributes": {
+        "state_class": "measurement",
+        "unit_of_measurement": "°F",
+        "device_class": "temperature",
+        "friendly_name": "CentraLite 3310-G Temperature"
+      },
+      "last_changed": "2025-10-15T12:01:24.772633+00:00",
+      "last_reported": "2025-10-15T12:01:24.772633+00:00",
+      "last_updated": "2025-10-15T12:01:24.772633+00:00",
+      "context": {
+        "id": "01K7KVY694GMKMVQSXSA4XJAN5",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    "sensor.centralite_3310_g_humidity": {
+      "entity_id": "sensor.centralite_3310_g_humidity",
+      "state": "60.59",
+      "attributes": {
+        "state_class": "measurement",
+        "unit_of_measurement": "%",
+        "device_class": "humidity",
+        "friendly_name": "CentraLite 3310-G Humidity"
+      },
+      "last_changed": "2025-10-15T12:12:49.271938+00:00",
+      "last_reported": "2025-10-15T12:12:49.271938+00:00",
+      "last_updated": "2025-10-15T12:12:49.271938+00:00",
+      "context": {
+        "id": "01K7KWK2QQ3MADMAK6TW68HWZF",
+        "parent_id": null,
+        "user_id": null
+      }
+    },
+    "binary_sensor.motion_sensor": {
+      "entity_id": "binary_sensor.motion_sensor",
+      "state": "off",
+      "attributes": {
+        "device_class": "motion",
+        "friendly_name": "motion sensor"
+      },
+      "last_changed": "2025-10-15T12:24:06.800059+00:00",
+      "last_reported": "2025-10-15T12:24:06.800059+00:00",
+      "last_updated": "2025-10-15T12:24:06.800059+00:00",
+      "context": {
+        "id": "01K7KX7RCG10S6N3469HRJ2VT3",
+        "parent_id": null,
+        "user_id": null
+      }
+    }
+  },
+  "services": {
+    "light.turn_on": [],
+    "light.turn_off": [
+      {
+        "entity_id": "light.short_lamp",
+        "state": "off",
+        "attributes": {
+          "supported_color_modes": [
+            "brightness"
+          ],
+          "color_mode": null,
+          "brightness": null,
+          "friendly_name": "short lamp ",
+          "supported_features": 32
+        },
+        "last_changed": "2025-10-15T12:28:19.790406+00:00",
+        "last_reported": "2025-10-15T12:28:19.790406+00:00",
+        "last_updated": "2025-10-15T12:28:19.790406+00:00",
+        "context": {
+          "id": "01K7KXFFCCF2FZABKY3V2X8NXM",
+          "parent_id": null,
+          "user_id": "a354881bd7bd4db986287fbe7f85d069"
+        }
+      }
+    ],
+    "switch.turn_on": [],
+    "switch.turn_off": [
+      {
+        "entity_id": "switch.bot1",
+        "state": "off",
+        "attributes": {
+          "last_run_success": true,
+          "switch_mode": true,
+          "device_class": "switch",
+          "friendly_name": "Switch bot"
+        },
+        "last_changed": "2025-10-15T12:28:21.340570+00:00",
+        "last_reported": "2025-10-15T12:28:21.340570+00:00",
+        "last_updated": "2025-10-15T12:28:21.340570+00:00",
+        "context": {
+          "id": "01K7KXFGXR7JS0NSN7G8TWJTVR",
+          "parent_id": null,
+          "user_id": "a354881bd7bd4db986287fbe7f85d069"
+        }
+      }
+    ],
+    "automation.reload": [],
+    "config.check": {
+      "result": "valid",
+      "errors": null,
+      "warnings": null
+    }
+  },
+  "history": {
+    "sensor.centralite_3310_g_temperature": [
+      [
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.898",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T06:28:21.381000+00:00",
+          "last_updated": "2025-10-15T06:28:21.381000+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.88",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T06:32:26.693353+00:00",
+          "last_updated": "2025-10-15T06:32:26.693353+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.808",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T06:47:23.908893+00:00",
+          "last_updated": "2025-10-15T06:47:23.908893+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.772",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T07:02:21.095600+00:00",
+          "last_updated": "2025-10-15T07:02:21.095600+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.754",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T07:17:18.274538+00:00",
+          "last_updated": "2025-10-15T07:17:18.274538+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.7",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T07:32:15.450367+00:00",
+          "last_updated": "2025-10-15T07:32:15.450367+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.646",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T07:47:12.633936+00:00",
+          "last_updated": "2025-10-15T07:47:12.633936+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.592",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T08:02:09.834652+00:00",
+          "last_updated": "2025-10-15T08:02:09.834652+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.556",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T08:17:07.033879+00:00",
+          "last_updated": "2025-10-15T08:17:07.033879+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.52",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T08:32:04.224697+00:00",
+          "last_updated": "2025-10-15T08:32:04.224697+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.448",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T08:47:01.372339+00:00",
+          "last_updated": "2025-10-15T08:47:01.372339+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.43",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T09:01:58.559695+00:00",
+          "last_updated": "2025-10-15T09:01:58.559695+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.412",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T09:16:55.749650+00:00",
+          "last_updated": "2025-10-15T09:16:55.749650+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.376",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T09:31:52.959540+00:00",
+          "last_updated": "2025-10-15T09:31:52.959540+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.34",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T10:01:47.380018+00:00",
+          "last_updated": "2025-10-15T10:01:47.380018+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.322",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T10:16:44.549210+00:00",
+          "last_updated": "2025-10-15T10:16:44.549210+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.304",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T10:31:41.773884+00:00",
+          "last_updated": "2025-10-15T10:31:41.773884+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.286",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T10:46:38.949957+00:00",
+          "last_updated": "2025-10-15T10:46:38.949957+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.268",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T11:01:36.096730+00:00",
+          "last_updated": "2025-10-15T11:01:36.096730+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.232",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T11:31:30.466716+00:00",
+          "last_updated": "2025-10-15T11:31:30.466716+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.214",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T11:46:27.616782+00:00",
+          "last_updated": "2025-10-15T11:46:27.616782+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_temperature",
+          "state": "70.196",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "°F",
+            "device_class": "temperature",
+            "friendly_name": "CentraLite 3310-G Temperature"
+          },
+          "last_changed": "2025-10-15T12:01:24.772633+00:00",
+          "last_updated": "2025-10-15T12:01:24.772633+00:00"
+        }
+      ]
+    ],
+    "sensor.centralite_3310_g_humidity": [
+      [
+        {
+          "entity_id": "sensor.centralite_3310_g_humidity",
+          "state": "56.5",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "%",
+            "device_class": "humidity",
+            "friendly_name": "CentraLite 3310-G Humidity"
+          },
+          "last_changed": "2025-10-15T06:28:21.381000+00:00",
+          "last_updated": "2025-10-15T06:28:21.381000+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_humidity",
+          "state": "57.51",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "%",
+            "device_class": "humidity",
+            "friendly_name": "CentraLite 3310-G Humidity"
+          },
+          "last_changed": "2025-10-15T06:42:51.521538+00:00",
+          "last_updated": "2025-10-15T06:42:51.521538+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_humidity",
+          "state": "58.51",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "%",
+            "device_class": "humidity",
+            "friendly_name": "CentraLite 3310-G Humidity"
+          },
+          "last_changed": "2025-10-15T08:02:36.498964+00:00",
+          "last_updated": "2025-10-15T08:02:36.498964+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_humidity",
+          "state": "59.54",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "%",
+            "device_class": "humidity",
+            "friendly_name": "CentraLite 3310-G Humidity"
+          },
+          "last_changed": "2025-10-15T10:11:12.290385+00:00",
+          "last_updated": "2025-10-15T10:11:12.290385+00:00"
+        },
+        {
+          "entity_id": "sensor.centralite_3310_g_humidity",
+          "state": "60.59",
+          "attributes": {
+            "state_class": "measurement",
+            "unit_of_measurement": "%",
+            "device_class": "humidity",
+            "friendly_name": "CentraLite 3310-G Humidity"
+          },
+          "last_changed": "2025-10-15T12:12:49.271938+00:00",
+          "last_updated": "2025-10-15T12:12:49.271938+00:00"
+        }
+      ]
+    ],
+    "binary_sensor.motion_sensor": [
+      [
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:28:21.381000+00:00",
+          "last_updated": "2025-10-15T06:28:21.381000+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:29:12.484688+00:00",
+          "last_updated": "2025-10-15T06:29:12.484688+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:29:15.368836+00:00",
+          "last_updated": "2025-10-15T06:29:15.368836+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:33:26.881818+00:00",
+          "last_updated": "2025-10-15T06:33:26.881818+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:33:46.672820+00:00",
+          "last_updated": "2025-10-15T06:33:46.672820+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:35:39.068762+00:00",
+          "last_updated": "2025-10-15T06:35:39.068762+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:35:40.094465+00:00",
+          "last_updated": "2025-10-15T06:35:40.094465+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:36:19.104688+00:00",
+          "last_updated": "2025-10-15T06:36:19.104688+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:36:22.962128+00:00",
+          "last_updated": "2025-10-15T06:36:22.962128+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:36:56.831058+00:00",
+          "last_updated": "2025-10-15T06:36:56.831058+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:36:58.207468+00:00",
+          "last_updated": "2025-10-15T06:36:58.207468+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:38:11.724208+00:00",
+          "last_updated": "2025-10-15T06:38:11.724208+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:38:42.943561+00:00",
+          "last_updated": "2025-10-15T06:38:42.943561+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:41:05.665073+00:00",
+          "last_updated": "2025-10-15T06:41:05.665073+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:41:18.822889+00:00",
+          "last_updated": "2025-10-15T06:41:18.822889+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:43:55.650014+00:00",
+          "last_updated": "2025-10-15T06:43:55.650014+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:44:45.845666+00:00",
+          "last_updated": "2025-10-15T06:44:45.845666+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:45:45.081472+00:00",
+          "last_updated": "2025-10-15T06:45:45.081472+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:46:55.586687+00:00",
+          "last_updated": "2025-10-15T06:46:55.586687+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:47:55.890301+00:00",
+          "last_updated": "2025-10-15T06:47:55.890301+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:50:00.918492+00:00",
+          "last_updated": "2025-10-15T06:50:00.918492+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:50:32.462569+00:00",
+          "last_updated": "2025-10-15T06:50:32.462569+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:51:50.419452+00:00",
+          "last_updated": "2025-10-15T06:51:50.419452+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:53:36.321837+00:00",
+          "last_updated": "2025-10-15T06:53:36.321837+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:54:26.710166+00:00",
+          "last_updated": "2025-10-15T06:54:26.710166+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:56:14.172211+00:00",
+          "last_updated": "2025-10-15T06:56:14.172211+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:56:24.569200+00:00",
+          "last_updated": "2025-10-15T06:56:24.569200+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:57:57.063293+00:00",
+          "last_updated": "2025-10-15T06:57:57.063293+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T06:58:02.486067+00:00",
+          "last_updated": "2025-10-15T06:58:02.486067+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T07:05:46.302683+00:00",
+          "last_updated": "2025-10-15T07:05:46.302683+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T07:06:13.876706+00:00",
+          "last_updated": "2025-10-15T07:06:13.876706+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T07:07:13.521708+00:00",
+          "last_updated": "2025-10-15T07:07:13.521708+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T07:08:02.502919+00:00",
+          "last_updated": "2025-10-15T07:08:02.502919+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T07:09:40.847259+00:00",
+          "last_updated": "2025-10-15T07:09:40.847259+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T07:09:55.275647+00:00",
+          "last_updated": "2025-10-15T07:09:55.275647+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T07:10:26.621241+00:00",
+          "last_updated": "2025-10-15T07:10:26.621241+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T07:12:38.937994+00:00",
+          "last_updated": "2025-10-15T07:12:38.937994+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T07:13:10.100594+00:00",
+          "last_updated": "2025-10-15T07:13:10.100594+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T07:14:55.263081+00:00",
+          "last_updated": "2025-10-15T07:14:55.263081+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T07:15:25.593972+00:00",
+          "last_updated": "2025-10-15T07:15:25.593972+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T07:15:35.174974+00:00",
+          "last_updated": "2025-10-15T07:15:35.174974+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T07:16:12.226231+00:00",
+          "last_updated": "2025-10-15T07:16:12.226231+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T07:16:27.487541+00:00",
+          "last_updated": "2025-10-15T07:16:27.487541+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T07:17:03.482411+00:00",
+          "last_updated": "2025-10-15T07:17:03.482411+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:02:26.301917+00:00",
+          "last_updated": "2025-10-15T08:02:26.301917+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:03:13.434656+00:00",
+          "last_updated": "2025-10-15T08:03:13.434656+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:03:19.471171+00:00",
+          "last_updated": "2025-10-15T08:03:19.471171+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:03:54.918112+00:00",
+          "last_updated": "2025-10-15T08:03:54.918112+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:04:38.766959+00:00",
+          "last_updated": "2025-10-15T08:04:38.766959+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:05:47.861562+00:00",
+          "last_updated": "2025-10-15T08:05:47.861562+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:11:19.283000+00:00",
+          "last_updated": "2025-10-15T08:11:19.283000+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:12:04.191152+00:00",
+          "last_updated": "2025-10-15T08:12:04.191152+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:19:08.505500+00:00",
+          "last_updated": "2025-10-15T08:19:08.505500+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:19:41.678526+00:00",
+          "last_updated": "2025-10-15T08:19:41.678526+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:21:02.635000+00:00",
+          "last_updated": "2025-10-15T08:21:02.635000+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:21:37.189571+00:00",
+          "last_updated": "2025-10-15T08:21:37.189571+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:23:38.122921+00:00",
+          "last_updated": "2025-10-15T08:23:38.122921+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:24:27.090181+00:00",
+          "last_updated": "2025-10-15T08:24:27.090181+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:31:23.872517+00:00",
+          "last_updated": "2025-10-15T08:31:23.872517+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:32:27.815522+00:00",
+          "last_updated": "2025-10-15T08:32:27.815522+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:51:11.450956+00:00",
+          "last_updated": "2025-10-15T08:51:11.450956+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:51:48.968405+00:00",
+          "last_updated": "2025-10-15T08:51:48.968405+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:51:56.687225+00:00",
+          "last_updated": "2025-10-15T08:51:56.687225+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:53:59.408412+00:00",
+          "last_updated": "2025-10-15T08:53:59.408412+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:54:18.840305+00:00",
+          "last_updated": "2025-10-15T08:54:18.840305+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T08:54:53.921104+00:00",
+          "last_updated": "2025-10-15T08:54:53.921104+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T09:06:53.985760+00:00",
+          "last_updated": "2025-10-15T09:06:53.985760+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T09:07:25.634944+00:00",
+          "last_updated": "2025-10-15T09:07:25.634944+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T09:08:11.350385+00:00",
+          "last_updated": "2025-10-15T09:08:11.350385+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T09:08:44.952713+00:00",
+          "last_updated": "2025-10-15T09:08:44.952713+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T09:13:02.878600+00:00",
+          "last_updated": "2025-10-15T09:13:02.878600+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T09:13:38.715180+00:00",
+          "last_updated": "2025-10-15T09:13:38.715180+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T09:17:38.329454+00:00",
+          "last_updated": "2025-10-15T09:17:38.329454+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T09:18:10.284401+00:00",
+          "last_updated": "2025-10-15T09:18:10.284401+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T09:23:44.794207+00:00",
+          "last_updated": "2025-10-15T09:23:44.794207+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T09:24:17.930573+00:00",
+          "last_updated": "2025-10-15T09:24:17.930573+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T09:34:38.078403+00:00",
+          "last_updated": "2025-10-15T09:34:38.078403+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T09:35:21.931812+00:00",
+          "last_updated": "2025-10-15T09:35:21.931812+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T09:37:17.945316+00:00",
+          "last_updated": "2025-10-15T09:37:17.945316+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T09:38:06.172767+00:00",
+          "last_updated": "2025-10-15T09:38:06.172767+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T09:38:17.143647+00:00",
+          "last_updated": "2025-10-15T09:38:17.143647+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T09:39:16.862171+00:00",
+          "last_updated": "2025-10-15T09:39:16.862171+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T09:43:59.614128+00:00",
+          "last_updated": "2025-10-15T09:43:59.614128+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T09:44:32.888248+00:00",
+          "last_updated": "2025-10-15T09:44:32.888248+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T10:12:56.544652+00:00",
+          "last_updated": "2025-10-15T10:12:56.544652+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T10:14:01.117568+00:00",
+          "last_updated": "2025-10-15T10:14:01.117568+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T10:15:28.694458+00:00",
+          "last_updated": "2025-10-15T10:15:28.694458+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T10:16:00.845608+00:00",
+          "last_updated": "2025-10-15T10:16:00.845608+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T10:37:56.042755+00:00",
+          "last_updated": "2025-10-15T10:37:56.042755+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T10:38:39.895716+00:00",
+          "last_updated": "2025-10-15T10:38:39.895716+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T10:39:12.021647+00:00",
+          "last_updated": "2025-10-15T10:39:12.021647+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T10:39:46.453141+00:00",
+          "last_updated": "2025-10-15T10:39:46.453141+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T10:50:00.271983+00:00",
+          "last_updated": "2025-10-15T10:50:00.271983+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T10:50:33.304329+00:00",
+          "last_updated": "2025-10-15T10:50:33.304329+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T11:04:33.629797+00:00",
+          "last_updated": "2025-10-15T11:04:33.629797+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T11:05:04.428105+00:00",
+          "last_updated": "2025-10-15T11:05:04.428105+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T11:09:39.637012+00:00",
+          "last_updated": "2025-10-15T11:09:39.637012+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T11:10:12.238029+00:00",
+          "last_updated": "2025-10-15T11:10:12.238029+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T11:10:27.840300+00:00",
+          "last_updated": "2025-10-15T11:10:27.840300+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T11:11:05.299760+00:00",
+          "last_updated": "2025-10-15T11:11:05.299760+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T11:12:31.391271+00:00",
+          "last_updated": "2025-10-15T11:12:31.391271+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T11:13:07.079330+00:00",
+          "last_updated": "2025-10-15T11:13:07.079330+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T11:16:06.368876+00:00",
+          "last_updated": "2025-10-15T11:16:06.368876+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T11:16:41.186568+00:00",
+          "last_updated": "2025-10-15T11:16:41.186568+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T11:38:46.702935+00:00",
+          "last_updated": "2025-10-15T11:38:46.702935+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T11:39:21.317641+00:00",
+          "last_updated": "2025-10-15T11:39:21.317641+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T11:39:28.510866+00:00",
+          "last_updated": "2025-10-15T11:39:28.510866+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T11:40:03.411356+00:00",
+          "last_updated": "2025-10-15T11:40:03.411356+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T11:43:13.192537+00:00",
+          "last_updated": "2025-10-15T11:43:13.192537+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T11:43:46.077854+00:00",
+          "last_updated": "2025-10-15T11:43:46.077854+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T12:00:08.644276+00:00",
+          "last_updated": "2025-10-15T12:00:08.644276+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T12:01:48.331059+00:00",
+          "last_updated": "2025-10-15T12:01:48.331059+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T12:02:37.709838+00:00",
+          "last_updated": "2025-10-15T12:02:37.709838+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T12:03:20.506082+00:00",
+          "last_updated": "2025-10-15T12:03:20.506082+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T12:03:48.172944+00:00",
+          "last_updated": "2025-10-15T12:03:48.172944+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T12:05:12.483705+00:00",
+          "last_updated": "2025-10-15T12:05:12.483705+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T12:05:35.062200+00:00",
+          "last_updated": "2025-10-15T12:05:35.062200+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T12:06:38.437506+00:00",
+          "last_updated": "2025-10-15T12:06:38.437506+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T12:06:56.576260+00:00",
+          "last_updated": "2025-10-15T12:06:56.576260+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T12:07:31.860180+00:00",
+          "last_updated": "2025-10-15T12:07:31.860180+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T12:08:57.868940+00:00",
+          "last_updated": "2025-10-15T12:08:57.868940+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T12:09:36.728031+00:00",
+          "last_updated": "2025-10-15T12:09:36.728031+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T12:09:41.384597+00:00",
+          "last_updated": "2025-10-15T12:09:41.384597+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T12:13:51.040950+00:00",
+          "last_updated": "2025-10-15T12:13:51.040950+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T12:13:56.876880+00:00",
+          "last_updated": "2025-10-15T12:13:56.876880+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T12:21:44.935416+00:00",
+          "last_updated": "2025-10-15T12:21:44.935416+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "on",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T12:22:14.708516+00:00",
+          "last_updated": "2025-10-15T12:22:14.708516+00:00"
+        },
+        {
+          "entity_id": "binary_sensor.motion_sensor",
+          "state": "off",
+          "attributes": {
+            "device_class": "motion",
+            "friendly_name": "motion sensor"
+          },
+          "last_changed": "2025-10-15T12:24:06.800059+00:00",
+          "last_updated": "2025-10-15T12:24:06.800059+00:00"
+        }
+      ]
+    ]
+  },
+  "errors": []
+}

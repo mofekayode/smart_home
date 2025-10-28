@@ -7,11 +7,13 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "chat": "node cli-chat.js",
     "start": "node src/index.js",
-    "voice": "node src/voice_cli.js",
-    "voice:test": "node src/voice_speak.js",
-    "voice:debug": "node src/voice_debug.js",
-    "vapi:setup": "node src/vapi-setup.js",
-    "vapi:client": "node src/vapi-client.js"
+    "capture": "node capture-ha-data.js",
+    "voice": "LD_LIBRARY_PATH=./node_modules/sherpa-onnx-linux-x64:$LD_LIBRARY_PATH node src/voice_realtime_clean.js",
+    "voice:debug": "DEBUG_VOICE=true LD_LIBRARY_PATH=./node_modules/sherpa-onnx-linux-x64:$LD_LIBRARY_PATH node src/voice_realtime_clean.js",
+    "voice:enroll": "LD_LIBRARY_PATH=./node_modules/sherpa-onnx-linux-x64:$LD_LIBRARY_PATH node src/enroll-voice.js",
+    "voice:test": "LD_LIBRARY_PATH=./node_modules/sherpa-onnx-linux-x64:$LD_LIBRARY_PATH node src/test-fingerprint.js",
+    "voice:basic": "node src/voice_cli.js",
+    "voice:speak": "node src/voice_speak.js"
   },
   "keywords": [],
   "author": "",
@@ -26,7 +28,10 @@
     "express": "^5.1.0",
     "js-yaml": "^4.1.0",
     "node-record-lpcm16": "^1.0.1",
-    "openai": "^6.3.0"
+    "onnxruntime-node": "^1.23.0",
+    "openai": "^6.3.0",
+    "sherpa-onnx-node": "^1.12.14",
+    "ws": "^8.18.3"
   },
   "type": "module"
 }
