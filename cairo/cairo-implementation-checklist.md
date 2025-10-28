@@ -100,7 +100,7 @@ cairo/
 
 ### Initial Setup Tasks
 
-- [ ] Create project directory structure
+- [x] Create project directory structure
   ```bash
   cd ~/smartbrain/cairo
   mkdir -p services/{voice,conversation,tools,event-bus,ui}
@@ -113,7 +113,7 @@ cairo/
   mkdir -p data/{sqlite,models/{wake_word,whisper,piper}}
   ```
 
-- [ ] Create .gitignore
+- [x] Create .gitignore
   ```bash
   cat > .gitignore << 'EOF'
 # Environment
@@ -151,14 +151,14 @@ Thumbs.db
 EOF
   ```
 
-- [ ] Initialize Git
+- [x] Initialize Git
   ```bash
   git init
   git add .gitignore
   git commit -m "Initial commit: Project structure"
   ```
 
-- [ ] Create .env template
+- [x] Create .env template
   ```bash
   cat > .env.example << 'EOF'
 # Home Assistant
@@ -190,7 +190,7 @@ EOF
   # Edit .env with your actual values
   ```
 
-**Validation:** Directory structure created, git initialized
+**Validation:** ✅ **PHASE 0 COMPLETE** - Directory structure created, git initialized, .env configured
 
 ---
 
@@ -198,7 +198,7 @@ EOF
 
 ### Redis Service (Event Bus)
 
-- [ ] Create Cairo docker-compose.yml
+- [x] Create Cairo docker-compose.yml
   ```yaml
   # cairo/docker-compose.yml
   version: '3.8'
@@ -217,14 +217,14 @@ EOF
     # Add more services as we build them
   ```
 
-- [ ] Start Redis
+- [x] Start Redis
   ```bash
   cd ~/smartbrain/cairo
   docker compose up -d redis
   docker compose logs -f redis  # Verify it's running
   ```
 
-- [ ] Test Redis connection
+- [x] Test Redis connection
   ```bash
   docker exec -it cairo-redis redis-cli ping
   # Should return: PONG
@@ -232,7 +232,7 @@ EOF
 
 ### Event Bus Service (TypeScript)
 
-- [ ] Initialize event-bus service
+- [x] Initialize event-bus service
   ```bash
   cd services/event-bus
   npm init -y
@@ -241,7 +241,7 @@ EOF
   npx tsc --init
   ```
 
-- [ ] Create event types
+- [x] Create event types
   ```typescript
   // shared/types/events.ts
   export interface BaseEvent {
@@ -293,7 +293,7 @@ EOF
   export type EventType = CairoEvent['type'];
   ```
 
-- [ ] Implement EventBus class
+- [x] Implement EventBus class
   ```typescript
   // services/event-bus/src/bus.ts
   import Redis from 'ioredis';
@@ -417,7 +417,7 @@ EOF
   type EventHandler = (event: CairoEvent) => Promise<void> | void;
   ```
 
-- [ ] Create simple test script
+- [x] Create simple test script
   ```typescript
   // services/event-bus/src/test.ts
   import { EventBus } from './bus';
@@ -445,21 +445,21 @@ EOF
   test();
   ```
 
-- [ ] Test event bus
+- [x] Test event bus
   ```bash
   cd services/event-bus
-  npx ts-node src/test.ts
+  npx tsx src/test.ts
   # Should see: Published and Received messages
   ```
 
 ### SQLite Database Setup
 
-- [ ] Install SQLite tools
+- [x] Install SQLite tools (used better-sqlite3 npm package instead)
   ```bash
-  sudo apt install sqlite3
+  # Installed better-sqlite3 via npm for programmatic access
   ```
 
-- [ ] Create database schema
+- [x] Create database schema
   ```sql
   -- data/sqlite/schema.sql
   
@@ -527,23 +527,23 @@ EOF
   );
   ```
 
-- [ ] Initialize databases
+- [x] Initialize databases
   ```bash
-  cd ~/smartbrain/cairo/data/sqlite
-  sqlite3 cairo.db < ../../schema.sql
-  sqlite3 rag.db "CREATE VIRTUAL TABLE documents USING fts5(id, content, metadata, timestamp);"
+  # Initialized via Node.js script: services/event-bus/src/init-db.ts
+  cd services/event-bus
+  npx tsx src/init-db.ts
   ```
 
-- [ ] Test database
+- [x] Test database
   ```bash
-  sqlite3 cairo.db "SELECT name FROM sqlite_master WHERE type='table';"
-  # Should list: event, conversation, conversation_search, voice_profile, user_preference, automation
+  # Verified during initialization - all tables created successfully
+  # Tables: event, conversation, conversation_search, voice_profile, user_preference, automation
   ```
 
-**Validation:** 
-- Redis running and accepting connections
-- Event bus can publish and subscribe
-- SQLite databases created with schema
+**Validation:** ✅ **PHASE 1 COMPLETE**
+- ✅ Redis running and accepting connections
+- ✅ Event bus can publish and subscribe
+- ✅ SQLite databases created with schema (cairo.db and rag.db)
 
 ---
 
