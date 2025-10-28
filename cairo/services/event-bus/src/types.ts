@@ -38,10 +38,20 @@ export interface ToolResultEvent extends BaseEvent {
   };
 }
 
+export interface ToolErrorEvent extends BaseEvent {
+  type: 'tool.error';
+  data: {
+    request_id: string;
+    tool: string;
+    error: string;
+  };
+}
+
 export type CairoEvent =
   | WakeWordDetectedEvent
   | SpeechFinalEvent
   | ToolRequestEvent
-  | ToolResultEvent;
+  | ToolResultEvent
+  | ToolErrorEvent;
 
 export type EventType = CairoEvent['type'];

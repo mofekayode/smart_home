@@ -36,11 +36,11 @@
 {"k":"{\"nodeId\":2,\"commandClass\":89,\"endpoint\":0,\"property\":\"hasDynamicInfo\"}","v":false,"ts":1760135906853}
 {"k":"{\"nodeId\":2,\"commandClass\":89,\"endpoint\":0,\"property\":\"info\",\"propertyKey\":1}","v":{"mode":0,"profile":1,"eventCode":0},"ts":1760135906854}
 {"k":"{\"nodeId\":2,\"commandClass\":89,\"endpoint\":0,\"property\":\"interviewComplete\"}","v":true,"ts":1760135906855}
-{"k":"{\"nodeId\":2,\"commandClass\":38,\"endpoint\":0,\"property\":\"currentValue\"}","v":40,"ts":1760531321892}
+{"k":"{\"nodeId\":2,\"commandClass\":38,\"endpoint\":0,\"property\":\"currentValue\"}","v":0,"ts":1761663117595}
 {"k":"{\"nodeId\":2,\"commandClass\":38,\"endpoint\":0,\"property\":\"interviewComplete\"}","v":true,"ts":1760135906945}
 {"k":"{\"nodeId\":2,\"commandClass\":44,\"endpoint\":0,\"property\":\"interviewComplete\"}","v":true,"ts":1760135907266}
 {"k":"{\"nodeId\":2,\"commandClass\":112,\"endpoint\":0,\"property\":\"interviewComplete\"}","v":true,"ts":1760135907270}
-{"k":"{\"nodeId\":2,\"commandClass\":38,\"endpoint\":0,\"property\":\"targetValue\"}","v":255,"ts":1760531321670}
+{"k":"{\"nodeId\":2,\"commandClass\":38,\"endpoint\":0,\"property\":\"targetValue\"}","v":255,"ts":1761663115813}
 {"k":"{\"nodeId\":3,\"commandClass\":119,\"endpoint\":0,\"property\":\"name\"}","v":"short lamp","ts":1760136318725}
 {"k":"{\"nodeId\":3,\"commandClass\":159,\"endpoint\":0,\"property\":\"interviewComplete\"}","v":true,"ts":1760136318958}
 {"k":"{\"nodeId\":3,\"commandClass\":152,\"endpoint\":0,\"property\":\"interviewComplete\"}","v":true,"ts":1760136319128}
@@ -72,12 +72,8 @@
 {"k":"{\"nodeId\":3,\"commandClass\":89,\"endpoint\":0,\"property\":\"hasDynamicInfo\"}","v":false,"ts":1760136321162}
 {"k":"{\"nodeId\":3,\"commandClass\":89,\"endpoint\":0,\"property\":\"info\",\"propertyKey\":1}","v":{"mode":0,"profile":1,"eventCode":0},"ts":1760136321163}
 {"k":"{\"nodeId\":3,\"commandClass\":89,\"endpoint\":0,\"property\":\"interviewComplete\"}","v":true,"ts":1760136321165}
-{"k":"{\"nodeId\":3,\"commandClass\":38,\"endpoint\":0,\"property\":\"currentValue\"}","v":40,"ts":1760531325525}
+{"k":"{\"nodeId\":3,\"commandClass\":38,\"endpoint\":0,\"property\":\"currentValue\"}","v":40,"ts":1761663066688}
 {"k":"{\"nodeId\":3,\"commandClass\":38,\"endpoint\":0,\"property\":\"interviewComplete\"}","v":true,"ts":1760136321241}
 {"k":"{\"nodeId\":3,\"commandClass\":44,\"endpoint\":0,\"property\":\"interviewComplete\"}","v":true,"ts":1760136321532}
 {"k":"{\"nodeId\":3,\"commandClass\":112,\"endpoint\":0,\"property\":\"interviewComplete\"}","v":true,"ts":1760136321535}
 {"k":"{\"nodeId\":3,\"commandClass\":38,\"endpoint\":0,\"property\":\"targetValue\"}","v":255,"ts":1760531321510}
-{"k":"{\"nodeId\":2,\"commandClass\":38,\"endpoint\":0,\"property\":\"currentValue\"}","v":40,"ts":1761216299681}
-{"k":"{\"nodeId\":2,\"commandClass\":38,\"endpoint\":0,\"property\":\"currentValue\"}","v":40,"ts":1761229599330}
-{"k":"{\"nodeId\":2,\"commandClass\":38,\"endpoint\":0,\"property\":\"currentValue\"}","v":40,"ts":1761359680084}
-{"k":"{\"nodeId\":2,\"commandClass\":38,\"endpoint\":0,\"property\":\"currentValue\"}","v":40,"ts":1761494362888}

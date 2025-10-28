@@ -10,7 +10,7 @@
 {"k":"node.1.interviewStage","v":"Complete"}
 {"k":"node.1.deviceConfigHash","v":"$v2$q64FAA=="}
 {"k":"controller.provisioningList","v":[{"version":1,"requestedSecurityClasses":["S2_Unauthenticated","S0_Legacy"],"securityClasses":["S2_Unauthenticated","S0_Legacy"],"dsk":"15779-13308-48324-08640-25745-57916-60057-22725","genericDeviceClass":17,"specificDeviceClass":1,"installerIconType":1536,"manufacturerId":603,"productType":4,"productId":1,"applicationVersion":"2.10","name":"","location":""},{"version":1,"requestedSecurityClasses":["S2_Unauthenticated","S0_Legacy"],"securityClasses":["S2_Unauthenticated","S0_Legacy"],"dsk":"37456-45529-32230-59870-02598-22354-49148-21000","genericDeviceClass":17,"specificDeviceClass":1,"installerIconType":1536,"manufacturerId":603,"productType":4,"productId":1,"applicationVersion":"2.10","name":"short lamp","location":""}]}
-{"k":"node.2.lastSeen","v":1761229599328}
+{"k":"node.2.lastSeen","v":1761663117593}
 {"k":"node.2.hasSUCReturnRoute","v":true}
 {"k":"node.2.endpoint.0.commandClass.0x9f","v":{"isSupported":true,"isControlled":false,"secure":true,"version":1}}
 {"k":"node.2.securityClasses.S2_AccessControl","v":false}
@@ -45,7 +45,7 @@
 {"k":"node.2.endpoint.0.commandClass.0x55","v":{"isSupported":true,"isControlled":false,"secure":false,"version":2}}
 {"k":"node.2.endpoint.0.commandClass.0x6c","v":{"isSupported":true,"isControlled":false,"secure":false,"version":1}}
 {"k":"node.2.deviceConfigHash","v":"$v2$q0ZWUq1kACISi4vzkzPBdoIFDUEEstUg/+ggOdzI2AjIRTFXKbG0JF+pFgQA"}
-{"k":"node.3.lastSeen","v":1760531325523}
+{"k":"node.3.lastSeen","v":1761663066687}
 {"k":"node.3.hasSUCReturnRoute","v":true}
 {"k":"node.3.endpoint.0.commandClass.0x9f","v":{"isSupported":true,"isControlled":false,"secure":true,"version":1}}
 {"k":"node.3.securityClasses.S2_AccessControl","v":false}
@@ -80,7 +80,3 @@
 {"k":"node.3.endpoint.0.commandClass.0x55","v":{"isSupported":true,"isControlled":false,"secure":false,"version":2}}
 {"k":"node.3.endpoint.0.commandClass.0x6c","v":{"isSupported":true,"isControlled":false,"secure":false,"version":1}}
 {"k":"node.3.deviceConfigHash","v":"$v2$q0ZWUq1kACISi4vzkzPBdoIFDUEEstUg/+ggOdzI2AjIRTFXKbG0JF+pFgQA"}
-{"k":"node.2.lastSeen","v":1761359679975}
-{"k":"node.2.lastSeen","v":1761359680083}
-{"k":"node.2.lastSeen","v":1761494362802}
-{"k":"node.2.lastSeen","v":1761494362887}
